@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 
 import 'src/features/auth/presentation/login_screen.dart';
 import 'src/features/dashboard/presentation/dashboard_screen.dart';
+import 'src/features/camera/presentation/camera_screen.dart';
+import 'src/features/camera/presentation/image_preview_screen.dart';
 
 void main() {
   runApp(
@@ -38,6 +40,21 @@ final GoRouter _router = GoRouter(
           path: 'dashboard',
           builder: (BuildContext context, GoRouterState state) {
             return const DashboardScreen();
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/camera',
+      builder: (BuildContext context, GoRouterState state) {
+        return const CameraScreen();
+      },
+      routes: <RouteBase>[
+        GoRoute(
+          path: 'preview',
+          builder: (BuildContext context, GoRouterState state) {
+            final imagePath = state.extra as String;
+            return ImagePreviewScreen(imagePath: imagePath);
           },
         ),
       ],

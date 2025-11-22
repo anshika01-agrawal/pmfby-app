@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../main.dart';
@@ -64,7 +65,7 @@ class DashboardScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () => context.push('/camera'),
         label: const Text('Capture Crop Image'),
         icon: const Icon(Icons.camera_alt_rounded),
       ),
