@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../../auth/presentation/providers/auth_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,12 +24,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: 'Raj Kumar');
-    _emailController = TextEditingController(text: 'raj.kumar@example.com');
-    _phoneController = TextEditingController(text: '+91 98765 43210');
-    _addressController = TextEditingController(text: 'Village Name, District, State - 123456');
-    _aadharController = TextEditingController(text: '****-****-1234');
-    _farmSizeController = TextEditingController(text: '2.5 acres');
+    _nameController = TextEditingController();
+    _emailController = TextEditingController();
+    _phoneController = TextEditingController();
+    _addressController = TextEditingController();
+    _aadharController = TextEditingController();
+    _farmSizeController = TextEditingController();
+  }
+
+  void _populateControllers(user) {
+    if (user != null && _nameController.text.isEmpty) {
+      _nameController.text = user.name;
+      _emailController.text = user.email;
+      _phoneController.text = user.phone;
+      if (user.role == 'farmer') {
+        _addressController.text = '${user.village ?? ''}, ${user.district ?? ''}, ${user.state ?? ''}';
+        _aadharController.text = user.aadharNumber != null ? '****-****-${user.aadharNumber.substring(8)}' : 'Not provided';
+        _farmSizeController.text = user.farmSize != null ? '${user.farmSize} acres' : 'Not specified';
+      } else {
+        _addressController.text = '${user.department ?? ''}, ${user.assignedDistrict ?? ''}';
+        _aadharController.text = user.officialId ?? 'Not provided';
+        _farmSizeController.text = user.designation ?? 'Not specified';
+      }
+    }
   }
 
   @override
@@ -39,6 +58,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _aadharController.dispose();
     _farmSizeController.dispose();
     super.dispose();
+  }
+
+  void _populateControllers(user) {
+    if (user != null) {
+      _nameController.text = user.name;
+      _emailController.text = user.email;
+      _phoneController.text = user.phone;
+      if (user.role == 'farmer') {
+        _addressController.text = '${user.village}, ${user.district}, ${user.state}';
+        _aadharController.text = user.aadharNumber != null ? '****-****-${user.aadharNumber.substring(8)}' : 'Not provided';
+        _farmSizeController.text = user.farmSize != null ? '${user.farmSize} acres' : 'Not specified';
+      } else {
+        _addressController.text = '${user.department}, ${user.assignedDistrict}';
+        _aadharController.text = user.officialId ?? 'Not provided';
+        _farmSizeController.text = user.designation ?? 'Not specified';
+      }
+    }
   }
 
   void _saveProfile() {
@@ -56,7 +92,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, child) {
+        final user = authProvider.currentUser;
+        
+        // Populate controllers when user data is available
+        if (user != null && _nameController.text.isEmpty) {
+          _populateControllers(user);
+        }
+        
+        return Scaffold(
       appBar: AppBar(
         title: const Text('My Profile'),
         leading: IconButton(
@@ -244,9 +289,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: const Text('Cancel'),
                           ),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                               Navigator.of(context).pop();
-                              context.go('/');
+                              await context.read<AuthProvider>().logout();
+                              if (context.mounted) {
+                                context.go('/');
+                              }
                             },
                             child: const Text('Logout'),
                           ),
@@ -261,6 +309,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+        );
+      },
     );
   }
 

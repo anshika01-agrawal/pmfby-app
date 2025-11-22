@@ -26,14 +26,17 @@ class DashboardScreen extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              image: DecorationImage(
-                image: const AssetImage("assets/images/background.png"),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.1),
-                  BlendMode.dstATop,
-                ),
-              ),
+              color: Colors.green.withOpacity(0.05),
+              // Background image temporarily commented out due to image decode issues
+              // Uncomment once assets/images/background.png is properly added
+              // image: DecorationImage(
+              //   image: const AssetImage("assets/images/background.png"),
+              //   fit: BoxFit.cover,
+              //   colorFilter: ColorFilter.mode(
+              //     Colors.black.withOpacity(0.1),
+              //     BlendMode.dstATop,
+              //   ),
+              // ),
             ),
           ),
           Padding(
@@ -87,6 +90,8 @@ class DashboardCard extends StatelessWidget {
         onTap: () {
           if (title == 'My Profile') {
             context.push('/profile');
+          } else if (title == 'My Complaints') {
+            context.push('/complaints');
           }
           // Add navigation for other cards as needed
         },
