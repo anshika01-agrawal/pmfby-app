@@ -6,6 +6,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    
     return Scaffold(
       body: Center(
         child: Padding(
@@ -13,18 +15,33 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                'KrisiBandhu',
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+              SizedBox(
+                width: screenWidth * 0.9,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'KrisiBandhu',
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: screenWidth * 0.15,
+                        ),
+                  ),
+                ),
               ),
-              Text(
-                'Making Crop Insurance Faster and Fairer',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
+              const SizedBox(height: 8.0),
+              SizedBox(
+                width: screenWidth * 0.85,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'Making Crop Insurance Faster and Fairer',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: screenWidth * 0.055,
+                        ),
+                  ),
+                ),
               ),
               const SizedBox(height: 48.0),
               ElevatedButton(
