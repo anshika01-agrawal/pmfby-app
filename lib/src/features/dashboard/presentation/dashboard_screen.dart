@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:go_router/go_router.dart';
 import '../../../services/firebase_auth_service.dart';
 import '../../../services/firestore_service.dart';
 import '../../../models/user_profile.dart';
@@ -76,6 +75,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : screens[_selectedIndex],
+      floatingActionButton: _selectedIndex == 0
+          ? FloatingActionButton.extended(
+              onPressed: () => context.push('/camera'),
+              label: const Text('Capture Image'),
+              icon: const Icon(Icons.camera_alt_rounded),
+            )
+          : null,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
@@ -541,11 +547,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/camera'),
-        label: const Text('Capture Crop Image'),
-        icon: const Icon(Icons.camera_alt_rounded),
-      ),
     );
   }
 
@@ -655,6 +656,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
+    );
   }
 
   Widget _buildProfileDetail(String label, String value) {

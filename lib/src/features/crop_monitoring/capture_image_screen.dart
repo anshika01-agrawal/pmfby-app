@@ -5,7 +5,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
-import '../../auth/presentation/providers/auth_provider.dart';
 
 class CaptureImageScreen extends StatefulWidget {
   const CaptureImageScreen({super.key});
