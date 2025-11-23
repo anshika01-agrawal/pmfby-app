@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'src/features/auth/presentation/login_screen.dart';
 import 'src/features/auth/presentation/registration_screen.dart';
@@ -16,30 +17,47 @@ import 'src/features/complaints/presentation/screens/complaints_screen.dart';
 import 'src/features/complaints/presentation/screens/complaint_detail_screen.dart';
 import 'src/features/complaints/domain/models/complaint_model.dart';
 
+import 'src/features/crop_monitoring/capture_image_screen.dart';
+import 'src/features/claims/file_claim_screen.dart';
+import 'src/features/schemes/schemes_screen.dart';
+
+import 'src/services/firebase_auth_service.dart';
+import 'src/services/auth/auth_service.dart';
+import 'src/services/auth/auth_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Firebase initialization
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase initialization error: $e');
+  }
+
+  // Local Auth initialization (with demo user logic)
   final authService = AuthService();
   await authService.initialize();
-  
-  // Create demo users for testing if no users exist
+
   final allUsers = authService.getAllUsers();
-  print('Number of users in database: ${allUsers.length}');
+  debugPrint('Number of users in database: ${allUsers.length}');
+
   if (allUsers.isEmpty) {
-    print('Creating demo users...');
+    debugPrint('Creating demo users...');
     await _createDemoUsers(authService);
-    print('Demo users created successfully');
+    debugPrint('Demo users created successfully');
   }
-  
-  // Initialize AuthProvider
+
   final authProvider = AuthProvider(authService);
   await authProvider.initialize();
-  print('AuthProvider initialized - Is logged in: ${authProvider.isLoggedIn}');
-  
+  debugPrint('AuthProvider initialized - Is logged in: ${authProvider.isLoggedIn}');
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider.value(value: authProvider),
+        ChangeNotifierProvider(create: (_) => FirebaseAuthService()),
       ],
       child: const KrisiBandhuApp(),
     ),
@@ -95,59 +113,75 @@ class ThemeProvider with ChangeNotifier {
 GoRouter _buildRouter(BuildContext context) {
   return GoRouter(
     refreshListenable: context.read<AuthProvider>(),
+    initialLocation: '/login',
     redirect: (BuildContext context, GoRouterState state) {
-      // Simplified redirect logic - no complex auth checks during routing
+      // You can plug in actual auth logic later.
       return null;
     },
     routes: <RouteBase>[
+      // LOGIN + REGISTER
       GoRoute(
-        path: '/',
-        builder: (BuildContext context, GoRouterState state) {
-          return const LoginScreen();
-        },
+        path: '/login',
+        builder: (_, __) => const LoginScreen(),
       ),
       GoRoute(
         path: '/register',
-        builder: (BuildContext context, GoRouterState state) {
-          return const RegistrationScreen();
-        },
+        builder: (_, __) => const RegistrationScreen(),
       ),
+
+      // DASHBOARD
       GoRoute(
         path: '/dashboard',
-        builder: (BuildContext context, GoRouterState state) {
-          return const DashboardScreen();
-        },
+        builder: (_, __) => const DashboardScreen(),
       ),
+
+      // CAMERA
       GoRoute(
         path: '/camera',
-        builder: (BuildContext context, GoRouterState state) {
-          return const CameraScreen();
-        },
-        routes: <RouteBase>[
+        builder: (_, __) => const CameraScreen(),
+        routes: [
           GoRoute(
             path: 'preview',
-            builder: (BuildContext context, GoRouterState state) {
+            builder: (_, state) {
               final imagePath = state.extra as String;
               return ImagePreviewScreen(imagePath: imagePath);
             },
           ),
         ],
       ),
+
+      // CROP MONITORING (NEW)
+      GoRoute(
+        path: '/capture-image',
+        builder: (_, __) => const CaptureImageScreen(),
+      ),
+
+      // CLAIMS (NEW)
+      GoRoute(
+        path: '/file-claim',
+        builder: (_, __) => const FileClaimScreen(),
+      ),
+
+      // SCHEMES (NEW)
+      GoRoute(
+        path: '/schemes',
+        builder: (_, __) => const SchemesScreen(),
+      ),
+
+      // PROFILE
       GoRoute(
         path: '/profile',
-        builder: (BuildContext context, GoRouterState state) {
-          return const ProfileScreen();
-        },
+        builder: (_, __) => const ProfileScreen(),
       ),
+
+      // COMPLAINTS
       GoRoute(
         path: '/complaints',
-        builder: (BuildContext context, GoRouterState state) {
-          return const ComplaintsScreen();
-        },
-        routes: <RouteBase>[
+        builder: (_, __) => const ComplaintsScreen(),
+        routes: [
           GoRoute(
             path: 'detail',
-            builder: (BuildContext context, GoRouterState state) {
+            builder: (_, state) {
               final complaint = state.extra as Complaint;
               return ComplaintDetailScreen(complaint: complaint);
             },
@@ -158,8 +192,9 @@ GoRouter _buildRouter(BuildContext context) {
   );
 }
 
-class KrisiBandhuApp extends StatelessWidget {
-  const KrisiBandhuApp({super.key});
+
+class CropicApp extends StatelessWidget {
+  const CropicApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -167,9 +202,9 @@ class KrisiBandhuApp extends StatelessWidget {
     const Color secondaryColor = Color(0xFFFFA000); // Amber
 
     final TextTheme appTextTheme = TextTheme(
-      displayLarge: GoogleFonts.merriweather(fontSize: 57, fontWeight: FontWeight.bold),
-      titleLarge: GoogleFonts.robotoSlab(fontSize: 22, fontWeight: FontWeight.w500),
-      bodyMedium: GoogleFonts.openSans(fontSize: 14),
+      displayLarge: GoogleFonts.poppins(fontSize: 57, fontWeight: FontWeight.bold),
+      titleLarge: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500),
+      bodyMedium: GoogleFonts.notoSans(fontSize: 14),
       labelLarge: GoogleFonts.roboto(fontSize: 14, fontWeight: FontWeight.bold),
     );
 
@@ -184,23 +219,22 @@ class KrisiBandhuApp extends StatelessWidget {
       appBarTheme: AppBarTheme(
         backgroundColor: primarySeedColor,
         foregroundColor: Colors.white,
-        titleTextStyle: GoogleFonts.robotoSlab(fontSize: 24, fontWeight: FontWeight.bold),
+        titleTextStyle: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: primarySeedColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
+          textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
       cardTheme: CardThemeData(
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.symmetric(vertical: 8.0),
-
-      )
+      ),
     );
 
     final ThemeData darkTheme = ThemeData(
@@ -214,22 +248,22 @@ class KrisiBandhuApp extends StatelessWidget {
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.grey[900],
         foregroundColor: Colors.white,
-        titleTextStyle: GoogleFonts.robotoSlab(fontSize: 24, fontWeight: FontWeight.bold),
+        titleTextStyle: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.black,
           backgroundColor: secondaryColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.w500),
+          textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
-       cardTheme: CardThemeData(
+      cardTheme: CardThemeData(
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.symmetric(vertical: 8.0),
-      )
+      ),
     );
 
     return Consumer<ThemeProvider>(
@@ -240,6 +274,7 @@ class KrisiBandhuApp extends StatelessWidget {
           theme: lightTheme,
           darkTheme: darkTheme,
           themeMode: themeProvider.themeMode,
+          debugShowCheckedModeBanner: false,
         );
       },
     );
