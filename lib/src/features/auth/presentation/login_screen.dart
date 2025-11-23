@@ -127,7 +127,7 @@ Future<void> _sendOTP() async {
 
 Future<void> _verifyOTP() async {
   if (_otpController.text.length != 6) {
-    _showError('कृपया 6 अंकों का OTP दर्ज करें (Please enter 6-digit OTP)');
+    _showError(' कृपया 6 अंकों का OTP दर्ज करें (Please enter 6-digit OTP)');
     return;
   }
 
@@ -173,7 +173,7 @@ Future<void> _verifyOTP() async {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
+                    color: Colors.black.withOpacity(0.1),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -204,7 +204,7 @@ Future<void> _verifyOTP() async {
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: Colors.white.withValues(alpha: 0.9),
+                color: Colors.white.withOpacity(0.9),
               ),
             ),
             const SizedBox(height: 50),
@@ -232,7 +232,7 @@ Future<void> _verifyOTP() async {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
+                          color: Colors.black.withOpacity(0.1),
                           blurRadius: 20,
                           spreadRadius: 5,
                         ),
@@ -417,12 +417,15 @@ Future<void> _verifyOTP() async {
               'PMFBY - Pradhan Mantri Fasal Bima Yojana',
               style: GoogleFonts.poppins(
                 fontSize: 12,
-                color: Colors.white.withValues(alpha: 0.8),
+                color: Colors.white.withOpacity(0.8),
               ),
             ),
-          ],
-        ),
-      ),
-    );
+                ], // closes Column children
+              ), // closes Column
+            ), // closes SingleChildScrollView
+          ), // closes Center
+        ), // closes SafeArea
+      ), // closes Container
+    ); // closes Scaffold
   }
 }
