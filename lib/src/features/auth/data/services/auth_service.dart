@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/models/user_model.dart';
 
@@ -35,7 +36,7 @@ class AuthService {
       await _loginUser(user);
       return true;
     } catch (e) {
-      print('Registration error: $e');
+      debugPrint('Registration error: $e');
       return false;
     }
   }
@@ -54,7 +55,7 @@ class AuthService {
       }
       return false; // User not found or password incorrect
     } catch (e) {
-      print('Login error: $e');
+      debugPrint('Login error: $e');
       return false;
     }
   }
@@ -72,7 +73,7 @@ class AuthService {
       if (userJson == null) return null;
       return User.fromJson(jsonDecode(userJson));
     } catch (e) {
-      print('Get user error: $e');
+      debugPrint('Get user error: $e');
       return null;
     }
   }
@@ -96,7 +97,7 @@ class AuthService {
           .map((userJson) => User.fromJson(jsonDecode(userJson)))
           .toList();
     } catch (e) {
-      print('Get all users error: $e');
+      debugPrint('Get all users error: $e');
       return [];
     }
   }
@@ -123,7 +124,7 @@ class AuthService {
 
       return true;
     } catch (e) {
-      print('Update user error: $e');
+      debugPrint('Update user error: $e');
       return false;
     }
   }

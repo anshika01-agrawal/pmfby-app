@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import 'src/features/auth/presentation/login_screen.dart';
 import 'src/features/auth/presentation/registration_screen.dart';
@@ -22,15 +23,15 @@ import 'src/features/claims/file_claim_screen.dart';
 import 'src/features/schemes/schemes_screen.dart';
 
 import 'src/services/firebase_auth_service.dart';
-import 'src/services/auth/auth_service.dart';
-import 'src/services/auth/auth_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Firebase initialization
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
     debugPrint('Firebase initialization error: $e');
   }
@@ -59,7 +60,7 @@ void main() async {
         ChangeNotifierProvider.value(value: authProvider),
         ChangeNotifierProvider(create: (_) => FirebaseAuthService()),
       ],
-      child: const KrisiBandhuApp(),
+      child: const CropicApp(),
     ),
   );
 }

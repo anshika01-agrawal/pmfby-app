@@ -5,8 +5,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
-import '../../../services/firebase_auth_service.dart';
-import 'package:provider/provider.dart';
 
 class CaptureImageScreen extends StatefulWidget {
   const CaptureImageScreen({super.key});
@@ -52,7 +50,7 @@ class _CaptureImageScreenState extends State<CaptureImageScreen> {
 
       // Get current position
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
       );
 
       // Get location name from coordinates

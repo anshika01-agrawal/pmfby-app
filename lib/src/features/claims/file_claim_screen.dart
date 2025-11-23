@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
-import '../../../services/firebase_auth_service.dart';
-import '../../../services/firestore_service.dart';
-import '../../../models/insurance_claim.dart';
+import '../../services/firebase_auth_service.dart';
+import '../../services/firestore_service.dart';
+import '../../models/insurance_claim.dart';
 
 class FileClaimScreen extends StatefulWidget {
   const FileClaimScreen({super.key});

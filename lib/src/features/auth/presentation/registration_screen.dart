@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../domain/models/user_model.dart';
-import '../data/services/auth_service.dart';
 import 'providers/auth_provider.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -31,7 +30,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _stateController = TextEditingController();
   final _farmSizeController = TextEditingController();
   final _aadharController = TextEditingController();
-  List<String> _selectedCrops = [];
+  final List<String> _selectedCrops = [];
 
   // Official fields
   final _officialIdController = TextEditingController();
