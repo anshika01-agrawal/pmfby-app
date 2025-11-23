@@ -1,5 +1,6 @@
 /// Demo users for testing the application
 /// These are hardcoded test accounts that bypass authentication
+library;
 
 class DemoUsers {
   // Farmer Test Accounts

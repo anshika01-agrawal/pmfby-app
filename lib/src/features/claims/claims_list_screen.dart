@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../auth/presentation/providers/auth_provider.dart';
 import '../../models/insurance_claim.dart';
 
 class ClaimsListScreen extends StatefulWidget {

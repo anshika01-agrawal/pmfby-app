@@ -744,7 +744,7 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                 ),
               ],
             ),
-          )).toList(),
+          )),
         ],
       ),
     );
@@ -914,7 +914,7 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                         ),
                       ],
                     ),
-                  )).toList(),
+                  )),
                 ],
               ],
             ),

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'providers/auth_provider.dart';
-import '../../../services/firebase_auth_service.dart';
 import '../../../utils/demo_users.dart';
 
 class LoginScreen extends StatefulWidget {
