@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../services/image_upload_service.dart';
-
+import '../../services/image_upload_service.dart';
 class MultiImageCaptureScreen extends StatefulWidget {
   final String? reportId;
   final String? userId;
@@ -159,7 +158,7 @@ class _MultiImageCaptureScreenState extends State<MultiImageCaptureScreen> {
                           'Take Photo',
                           Icons.camera_alt,
                           Colors.blue.shade700,
-                          _captureImages.length < widget.maxImages
+                          _capturedImages.length < widget.maxImages
                               ? () => _captureImage()
                               : null,
                         ),
@@ -170,7 +169,7 @@ class _MultiImageCaptureScreenState extends State<MultiImageCaptureScreen> {
                           'From Gallery',
                           Icons.photo_library,
                           Colors.purple.shade700,
-                          _captureImages.length < widget.maxImages
+                          _capturedImages.length < widget.maxImages
                               ? () => _pickFromGallery()
                               : null,
                           outlined: true,

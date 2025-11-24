@@ -124,7 +124,7 @@ class _CaptureImageScreenState extends State<CaptureImageScreen> {
       }
 
       // Save image locally
-      final savedImagePath = await localStorageService.saveImageLocally(File(_image!.path));
+      final savedImagePath = await localStorageService.saveImageLocally(File(_image!.path),"123");
       
       // Create pending upload
       final upload = PendingUpload(

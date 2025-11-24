@@ -168,12 +168,6 @@ class LocalStorageService {
     await prefs.setString(_pendingUploadsKey, jsonEncode(jsonList));
   }
 
-  // Get count of pending uploads
-  Future<int> getPendingUploadsCount() async {
-    final uploads = await getPendingUploads();
-    return uploads.where((u) => u.status == SyncStatus.pending || u.status == SyncStatus.uploading).length;
-  }
-
   // Clear all synced uploads
   Future<void> clearSyncedUploads() async {
     final uploads = await getPendingUploads();

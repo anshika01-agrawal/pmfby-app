@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../services/image_upload_service.dart';
 import 'package:intl/intl.dart';
+import '../../services/image_upload_service.dart';
 
 class BatchUploadProgressScreen extends StatefulWidget {
   const BatchUploadProgressScreen({super.key});
