@@ -345,9 +345,6 @@ class KrashiBandhuApp extends StatelessWidget {
               final authProvider = AuthProvider(authService);
               await authProvider.initialize();
               
-              final connectivityService = ConnectivityService();
-              final autoSyncService = AutoSyncService();
-              
               // Navigate to main app with providers
               if (context.mounted) {
                 Navigator.of(context).pushReplacement(
@@ -357,8 +354,8 @@ class KrashiBandhuApp extends StatelessWidget {
                         ChangeNotifierProvider(create: (_) => ThemeProvider()),
                         ChangeNotifierProvider.value(value: authProvider),
                         ChangeNotifierProvider(create: (_) => FirebaseAuthService()),
-                        ChangeNotifierProvider.value(value: connectivityService),
-                        Provider.value(value: autoSyncService),
+                        ChangeNotifierProvider(create: (_) => ConnectivityService()),
+                        Provider(create: (_) => AutoSyncService()),
                         ChangeNotifierProvider(create: (_) => ImageUploadService()),
                       ],
                       child: const MainApp(),
