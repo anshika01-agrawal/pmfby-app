@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../domain/models/user_model.dart';
 import 'providers/auth_provider.dart';
+import '../../../services/email_otp_service.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -16,6 +17,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   int _currentPage = 0;
   String _userRole = 'farmer'; // 'farmer' or 'official'
   bool _isLoading = false;
+  
+  // Email OTP verification
+  bool _emailVerified = false;
+  bool _otpSent = false;
+  final _otpController = TextEditingController();
 
   // Common fields
   final _nameController = TextEditingController();
@@ -63,6 +69,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _otpController.dispose();
     _villageController.dispose();
     _districtController.dispose();
     _stateController.dispose();
@@ -77,11 +84,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void _nextPage() {
     if (_currentPage == 0) {
-      if (_validateCommonFields()) {
+      if (_validateCommonFields() && _emailVerified) {
         _pageController.nextPage(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
+      } else if (!_emailVerified) {
+        _showError('Please verify your email first');
       }
     }
   }
@@ -91,6 +100,88 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+  }
+
+  Future<void> _sendEmailOTP() async {
+    // Validate email first
+    if (_emailController.text.isEmpty || !_emailController.text.contains('@')) {
+      _showError('Please enter a valid email');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final success = await EmailOTPService.sendOTP(
+        email: _emailController.text.trim(),
+        purpose: 'register',
+      );
+
+      if (success) {
+        setState(() {
+          _otpSent = true;
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('✅ OTP sent to your email! Check your inbox.'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      _showError(e.toString());
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _verifyEmailOTP() async {
+    if (_otpController.text.isEmpty || _otpController.text.length != 6) {
+      _showError('Please enter a valid 6-digit OTP');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final isValid = EmailOTPService.verifyOTP(
+        _emailController.text.trim(),
+        _otpController.text.trim(),
+      );
+
+      if (isValid) {
+        setState(() {
+          _emailVerified = true;
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('✅ Email verified successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        _showError('Invalid or expired OTP. Please try again.');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   bool _validateCommonFields() {

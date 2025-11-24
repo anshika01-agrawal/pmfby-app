@@ -80,7 +80,14 @@ Future<void> _handleEmailLogin(bool isFarmer) async {
       if (user != null &&
           ((isFarmer && user.role == 'farmer') ||
               (!isFarmer && user.role == 'official'))) {
-        if (mounted) context.go('/dashboard');
+        // Route to appropriate dashboard based on role
+        if (mounted) {
+          if (user.role == 'official') {
+            context.go('/officer-dashboard');
+          } else {
+            context.go('/dashboard');
+          }
+        }
       } else {
         await authProvider.logout();
         _showError('Invalid role. Please login with correct account type.');
@@ -146,7 +153,13 @@ Future<void> _verifyOTP() async {
       
       if (mounted) {
         _showSuccess('Login successful! Welcome ${demoUser['name']}');
-        context.go('/dashboard');
+        // Route based on role
+        final role = demoUser['role'];
+        if (role == 'official') {
+          context.go('/officer-dashboard');
+        } else {
+          context.go('/dashboard');
+        }
       }
     } else {
       setState(() => _isLoading = false);
