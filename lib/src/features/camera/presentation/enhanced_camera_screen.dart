@@ -9,7 +9,6 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sensors_plus/sensors_plus.dart';
-import 'dart:math' as math;
 
 class EnhancedCameraScreen extends StatefulWidget {
   const EnhancedCameraScreen({super.key});
@@ -32,18 +31,15 @@ class _EnhancedCameraScreenState extends State<EnhancedCameraScreen>
   double _currentZoom = 1.0;
   double _minZoom = 1.0;
   double _maxZoom = 8.0;
-  final bool _isRecording = false;
   
   // AR and overlay features
   Position? _currentPosition;
-  String? _locationName;
   bool _showGrid = true;
   bool _showAROverlay = true;
   final bool _showLevelIndicator = true;
   
   // Sensors
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
-  double _tiltX = 0.0;
   double _tiltY = 0.0;
   
   // Timer
@@ -81,7 +77,6 @@ class _EnhancedCameraScreenState extends State<EnhancedCameraScreen>
     _accelerometerSubscription = accelerometerEvents.listen((AccelerometerEvent event) {
       if (mounted) {
         setState(() {
-          _tiltX = event.x;
           _tiltY = event.y;
         });
       }

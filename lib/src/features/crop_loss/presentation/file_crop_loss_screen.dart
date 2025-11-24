@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import '../models/crop_loss_report.dart';
 import '../../premium_calculator/data/india_data.dart';
 
 class FileCropLossScreen extends StatefulWidget {

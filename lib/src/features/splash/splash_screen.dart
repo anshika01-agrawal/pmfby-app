@@ -23,7 +23,6 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _rotateController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
-  late Animation<double> _rotateAnimation;
 
   @override
   void initState() {
@@ -58,10 +57,6 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     )..repeat();
-    _rotateAnimation = CurvedAnimation(
-      parent: _rotateController,
-      curve: Curves.linear,
-    );
 
     // Start animations
     _scaleController.forward();

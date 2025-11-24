@@ -70,7 +70,6 @@ Future<void> initializeApp() async {
 
   // Initialize connectivity and auto-sync services
   debugPrint('🔄 Initializing connectivity and sync services...');
-  final connectivityService = ConnectivityService();
   final autoSyncService = AutoSyncService();
   await autoSyncService.initializeNotifications();
   await autoSyncService.initializeBackgroundSync();
