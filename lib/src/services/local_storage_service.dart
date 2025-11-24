@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
-import '../models/crop_image.dart';
 
 enum SyncStatus {
   pending,

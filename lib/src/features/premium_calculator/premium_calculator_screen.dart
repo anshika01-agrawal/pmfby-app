@@ -587,7 +587,7 @@ class _PremiumCalculatorScreenState extends State<PremiumCalculatorScreen> {
           ),
         ),
         DropdownButtonFormField<String>(
-          value: value,
+          initialValue: value,
           decoration: InputDecoration(
             prefixIcon: Icon(icon, color: Colors.green.shade700),
             filled: true,

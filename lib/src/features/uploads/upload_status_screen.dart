@@ -73,7 +73,7 @@ class _UploadStatusScreenState extends State<UploadStatusScreen> {
                   if (_uploads.isEmpty)
                     _buildEmptyState()
                   else
-                    ..._uploads.map((upload) => _buildUploadCard(upload)).toList(),
+                    ..._uploads.map((upload) => _buildUploadCard(upload)),
                 ],
               ),
             ),

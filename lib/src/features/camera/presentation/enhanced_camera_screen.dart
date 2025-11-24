@@ -32,14 +32,14 @@ class _EnhancedCameraScreenState extends State<EnhancedCameraScreen>
   double _currentZoom = 1.0;
   double _minZoom = 1.0;
   double _maxZoom = 8.0;
-  bool _isRecording = false;
+  final bool _isRecording = false;
   
   // AR and overlay features
   Position? _currentPosition;
   String? _locationName;
   bool _showGrid = true;
   bool _showAROverlay = true;
-  bool _showLevelIndicator = true;
+  final bool _showLevelIndicator = true;
   
   // Sensors
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
