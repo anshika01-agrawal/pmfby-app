@@ -11,7 +11,6 @@ import 'src/features/auth/data/services/auth_service.dart';
 import 'src/features/auth/presentation/providers/auth_provider.dart';
 import 'src/features/auth/domain/models/user_model.dart';
 import 'src/features/dashboard/presentation/dashboard_screen.dart';
-import 'src/features/camera/presentation/camera_screen.dart';
 import 'src/features/camera/presentation/enhanced_camera_screen.dart';
 import 'src/features/camera/presentation/image_preview_screen.dart';
 import 'src/features/profile/presentation/profile_screen.dart';

@@ -179,7 +179,7 @@ class ImageUploadService extends ChangeNotifier {
         item.status = UploadStatus.completed;
         item.uploadedAt = DateTime.now();
         _uploadedImages++;
-        debugPrint('Image ${item.imageNumber} uploaded (${_uploadedImages}/$_totalImages)');
+        debugPrint('Image ${item.imageNumber} uploaded ($_uploadedImages/$_totalImages)');
       } else {
         item.status = UploadStatus.failed;
         item.errorMessage = 'Upload failed';

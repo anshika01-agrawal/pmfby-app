@@ -519,7 +519,7 @@ class _FileCropLossScreenState extends State<FileCropLossScreen> {
     bool enabled = true,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: Colors.red.shade700),

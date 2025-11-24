@@ -124,11 +124,12 @@ class _CaptureImageScreenState extends State<CaptureImageScreen> {
       }
 
       // Save image locally
-      final savedImagePath = await localStorageService.saveImageLocally(File(_image!.path));
+      final uploadId = DateTime.now().millisecondsSinceEpoch.toString();
+      final savedImagePath = await localStorageService.saveImageLocally(File(_image!.path), uploadId);
       
       // Create pending upload
       final upload = PendingUpload(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        id: uploadId,
         imagePath: savedImagePath,
         cropType: cropType,
         description: _locationName ?? 'Unknown location',

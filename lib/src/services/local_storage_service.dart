@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
-import '../models/crop_image.dart';
 
 enum SyncStatus {
   pending,
@@ -166,12 +165,6 @@ class LocalStorageService {
     final prefs = await SharedPreferences.getInstance();
     final jsonList = uploads.map((u) => u.toJson()).toList();
     await prefs.setString(_pendingUploadsKey, jsonEncode(jsonList));
-  }
-
-  // Get count of pending uploads
-  Future<int> getPendingUploadsCount() async {
-    final uploads = await getPendingUploads();
-    return uploads.where((u) => u.status == SyncStatus.pending || u.status == SyncStatus.uploading).length;
   }
 
   // Clear all synced uploads
