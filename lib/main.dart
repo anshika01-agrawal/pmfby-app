@@ -261,8 +261,40 @@ GoRouter _buildRouter(BuildContext context) {
 }
 
 
-class KrashiBandhuApp extends StatelessWidget {
+class KrashiBandhuApp extends StatefulWidget {
   const KrashiBandhuApp({super.key});
+
+  @override
+  State<KrashiBandhuApp> createState() => _KrashiBandhuAppState();
+}
+
+class _KrashiBandhuAppState extends State<KrashiBandhuApp> {
+  bool _initialized = false;
+  late AuthProvider _authProvider;
+  late ConnectivityService _connectivityService;
+  late AutoSyncService _autoSyncService;
+
+  Future<void> _initialize() async {
+    debugPrint('🚀 Starting app initialization...');
+    await initializeApp();
+    
+    // Initialize providers after splash
+    final authService = AuthService();
+    await authService.initialize();
+    _authProvider = AuthProvider(authService);
+    await _authProvider.initialize();
+    
+    _connectivityService = ConnectivityService();
+    _autoSyncService = AutoSyncService();
+    
+    debugPrint('✅ All initialization complete');
+    
+    if (mounted) {
+      setState(() {
+        _initialized = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -342,48 +374,20 @@ class KrashiBandhuApp extends StatelessWidget {
       darkTheme: darkTheme,
       themeMode: themeProvider.themeMode,
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(
-        onInitializationComplete: () async {
-          debugPrint('🚀 Starting app initialization...');
-          await initializeApp();
-          
-          // Initialize providers after splash
-          final authService = AuthService();
-          await authService.initialize();
-          final authProvider = AuthProvider(authService);
-          await authProvider.initialize();
-          
-          final connectivityService = ConnectivityService();
-          final autoSyncService = AutoSyncService();
-          
-          debugPrint('✅ All initialization complete');
-          
-          // Small delay to ensure context is ready
-          await Future.delayed(const Duration(milliseconds: 100));
-          
-          // Navigate to main app with providers
-          if (context.mounted) {
-            debugPrint('🔄 Navigating to main app...');
-            await Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (_) => MultiProvider(
-                  providers: [
-                    ChangeNotifierProvider.value(value: authProvider),
-                    ChangeNotifierProvider(create: (_) => FirebaseAuthService()),
-                    ChangeNotifierProvider.value(value: connectivityService),
-                    Provider.value(value: autoSyncService),
-                    ChangeNotifierProvider(create: (_) => ImageUploadService()),
-                  ],
-                  child: const MainApp(),
-                ),
-              ),
-            );
-            debugPrint('✅ Navigation complete');
-          } else {
-            debugPrint('⚠️ Context not mounted, navigation skipped');
-          }
-        },
-      ),
+      home: _initialized
+          ? MultiProvider(
+              providers: [
+                ChangeNotifierProvider.value(value: _authProvider),
+                ChangeNotifierProvider(create: (_) => FirebaseAuthService()),
+                ChangeNotifierProvider.value(value: _connectivityService),
+                Provider.value(value: _autoSyncService),
+                ChangeNotifierProvider(create: (_) => ImageUploadService()),
+              ],
+              child: const MainApp(),
+            )
+          : SplashScreen(
+              onInitializationComplete: _initialize,
+            ),
     );
   }
 }
