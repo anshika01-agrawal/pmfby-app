@@ -33,6 +33,7 @@ import 'src/features/multi_image/batch_upload_progress_screen.dart';
 import 'src/features/satellite/satellite_monitoring_screen.dart';
 import 'src/features/satellite/enhanced_satellite_screen.dart';
 import 'src/features/pmfby_info/pmfby_info_screen.dart';
+import 'src/features/batch_upload/enhanced_batch_upload_screen.dart';
 import 'src/theme/app_themes.dart';
 import 'src/localization/app_localizations.dart';
 
@@ -257,6 +258,12 @@ GoRouter _buildRouter(BuildContext context) {
       GoRoute(
         path: '/pmfby-info',
         builder: (_, __) => const PMFBYInfoScreen(),
+      ),
+
+      // BATCH UPLOAD
+      GoRoute(
+        path: '/batch-upload',
+        builder: (_, __) => const EnhancedBatchUploadScreen(),
       ),
 
       // COMPLAINTS

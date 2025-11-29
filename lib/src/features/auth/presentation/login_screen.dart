@@ -246,7 +246,7 @@ void _showRegistrationDialog() {
 
             // APP NAME
             Text(
-              'Krishi Bandhu - PMFBY',
+              'Krishi Bandhu',
               style: GoogleFonts.poppins(
                 fontSize: 42,
                 fontWeight: FontWeight.bold,
