@@ -243,4 +243,20 @@ class LocalStorageService {
       'totalSizeMB': (totalSize / (1024 * 1024)).toStringAsFixed(2),
     };
   }
+
+  // Generic data storage methods
+  Future<String?> getData(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(key);
+  }
+
+  Future<void> saveData(String key, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(key, value);
+  }
+
+  Future<void> removeData(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(key);
+  }
 }
