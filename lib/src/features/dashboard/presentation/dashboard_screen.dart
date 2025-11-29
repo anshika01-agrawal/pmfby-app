@@ -180,6 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             label: 'प्रोफाइल',
           ),
         ],
+        ),
       ),
     );
   }
