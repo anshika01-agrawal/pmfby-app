@@ -31,8 +31,11 @@ import 'src/features/crop_loss/presentation/file_crop_loss_screen.dart';
 import 'src/features/multi_image/multi_image_capture_screen.dart';
 import 'src/features/multi_image/batch_upload_progress_screen.dart';
 import 'src/features/satellite/satellite_monitoring_screen.dart';
+import 'src/features/satellite/enhanced_satellite_screen.dart';
 import 'src/features/pmfby_info/pmfby_info_screen.dart';
 import 'src/theme/pmfby_theme.dart';
+import 'src/theme/app_themes.dart';
+import 'src/localization/app_localizations.dart';
 
 import 'src/services/firebase_auth_service.dart';
 import 'src/services/image_upload_service.dart';
@@ -248,7 +251,7 @@ GoRouter _buildRouter(BuildContext context) {
       // SATELLITE MONITORING
       GoRoute(
         path: '/satellite',
-        builder: (_, __) => const SatelliteMonitoringScreen(),
+        builder: (_, __) => const EnhancedSatelliteScreen(),
       ),
 
       // PMFBY INFO
@@ -384,7 +387,7 @@ class _KrashiBandhuAppState extends State<KrashiBandhuApp> {
     final themeProvider = context.watch<ThemeProvider>();
     
     return MaterialApp(
-      title: 'Krishi Bandhu',
+      title: 'Krishi Bandhu - PMFBY',
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeProvider.themeMode,

@@ -139,7 +139,7 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Column(
                     children: [
                       Text(
-                        'Krishi Bandhu',
+                        'Krishi Bandhu - PMFBY',
                         style: GoogleFonts.poppins(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,

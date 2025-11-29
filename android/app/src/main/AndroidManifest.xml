@@ -23,7 +23,7 @@
     <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
 
     <application
-        android:label="Krishi Bandhu"
+        android:label="Krishi Bandhu - PMFBY"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
