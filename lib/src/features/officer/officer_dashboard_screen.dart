@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../../services/firebase_auth_service.dart';
-import '../../../models/user_profile.dart';
+import '../../services/firebase_auth_service.dart';
+import '../../models/user_profile.dart';
 import 'package:intl/intl.dart';
 
 enum OfficerLevel {

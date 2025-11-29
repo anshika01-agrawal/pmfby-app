@@ -56,7 +56,7 @@ class PMFBYTheme {
       elevation: 0,
       centerTitle: false,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: PMFBYColors.cardBackground,
       elevation: 2,
       shape: RoundedRectangleBorder(

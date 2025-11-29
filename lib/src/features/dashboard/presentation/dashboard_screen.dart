@@ -153,8 +153,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           elevation: 0,
           backgroundColor: Colors.white,
           onTap: (index) => setState(() => _selectedIndex = index),
-        items: const [
-          BottomNavigationBarItem(
+          items: const [
+            BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             activeIcon: Icon(Icons.home),
             label: 'होम',
