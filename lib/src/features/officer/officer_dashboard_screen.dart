@@ -262,16 +262,6 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                   ),
                 ),
               ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.notifications),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.settings),
-                  onPressed: () {},
-                ),
-              ],
             ),
 
             // Quick Stats Grid
