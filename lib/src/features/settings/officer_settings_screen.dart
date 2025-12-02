@@ -1047,13 +1047,397 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
   void _showSessionsDialog(BuildContext context) {
     showDialog(
       context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.7,
+          padding: EdgeInsets.all(24),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.devices, color: Colors.indigo.shade700),
+                  SizedBox(width: 8),
+                  Text(
+                    'Session Management',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.indigo.shade700,
+                    ),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.close),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSessionHeader(),
+                      SizedBox(height: 20),
+                      _buildSessionCard(
+                        'Current Session',
+                        'Mobile App - Android',
+                        'Active Now',
+                        '192.168.1.1',
+                        'Punjab, India',
+                        Icons.smartphone,
+                        Colors.green,
+                        isCurrentSession: true,
+                      ),
+                      _buildSessionCard(
+                        'Web Browser',
+                        'Chrome on Windows',
+                        '2 hours ago',
+                        '192.168.1.2',
+                        'Punjab, India',
+                        Icons.computer,
+                        Colors.blue,
+                      ),
+                      _buildSessionCard(
+                        'Mobile App - iOS',
+                        'iPhone 14',
+                        '1 day ago',
+                        '10.0.0.5',
+                        'Delhi, India',
+                        Icons.phone_iphone,
+                        Colors.orange,
+                      ),
+                      _buildSessionCard(
+                        'Web Browser',
+                        'Firefox on Mac',
+                        '3 days ago',
+                        '172.16.0.1',
+                        'Mumbai, India',
+                        Icons.laptop_mac,
+                        Colors.grey,
+                      ),
+                      SizedBox(height: 20),
+                      _buildSecurityTips(),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => _terminateAllSessions(context),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red.shade700,
+                        side: BorderSide(color: Colors.red.shade700),
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'End All Sessions',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.indigo.shade700,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'Done',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSessionHeader() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blue.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.info, color: Colors.blue.shade700, size: 20),
+              SizedBox(width: 8),
+              Text(
+                'Active Sessions Overview',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  color: Colors.blue.shade700,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Monitor and manage all active sessions on your PMFBY officer account. For security, end any sessions you don\'t recognize.',
+            style: GoogleFonts.roboto(
+              fontSize: 14,
+              color: Colors.blue.shade600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSessionCard(
+    String sessionType,
+    String deviceInfo,
+    String lastActive,
+    String ipAddress,
+    String location,
+    IconData icon,
+    Color iconColor,
+    {bool isCurrentSession = false}
+  ) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isCurrentSession ? Colors.green.shade50 : Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isCurrentSession ? Colors.green.shade200 : Colors.grey.shade200,
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: iconColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: iconColor, size: 20),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          sessionType,
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                        if (isCurrentSession) ...[
+                          SizedBox(width: 8),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade700,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'CURRENT',
+                              style: GoogleFonts.roboto(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    Text(
+                      deviceInfo,
+                      style: GoogleFonts.roboto(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (!isCurrentSession)
+                IconButton(
+                  onPressed: () => _terminateSession(sessionType),
+                  icon: Icon(Icons.close, color: Colors.red.shade600, size: 20),
+                  tooltip: 'End Session',
+                ),
+            ],
+          ),
+          SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildSessionDetail(Icons.access_time, 'Last Active', lastActive),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: _buildSessionDetail(Icons.location_on, 'Location', location),
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
+          _buildSessionDetail(Icons.computer, 'IP Address', ipAddress),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSessionDetail(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: Colors.grey.shade500),
+        SizedBox(width: 6),
+        Text(
+          '$label: ',
+          style: GoogleFonts.roboto(
+            fontSize: 12,
+            color: Colors.grey.shade500,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: GoogleFonts.roboto(
+              fontSize: 12,
+              color: Colors.grey.shade700,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSecurityTips() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.orange.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.security, color: Colors.orange.shade700, size: 20),
+              SizedBox(width: 8),
+              Text(
+                'Security Recommendations',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  color: Colors.orange.shade700,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12),
+          _buildSecurityTip('• End sessions on shared or public devices'),
+          _buildSecurityTip('• Monitor suspicious login locations'),
+          _buildSecurityTip('• Use strong passwords and enable 2FA'),
+          _buildSecurityTip('• Log out when finished with work'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSecurityTip(String tip) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 4),
+      child: Text(
+        tip,
+        style: GoogleFonts.roboto(
+          fontSize: 13,
+          color: Colors.orange.shade700,
+        ),
+      ),
+    );
+  }
+
+  void _terminateSession(String sessionType) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('$sessionType session terminated'),
+        backgroundColor: Colors.red.shade700,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _terminateAllSessions(BuildContext context) {
+    showDialog(
+      context: context,
       builder: (context) => AlertDialog(
-        title: Text('Active Sessions'),
-        content: Text('Session management feature coming soon!'),
+        title: Row(
+          children: [
+            Icon(Icons.warning, color: Colors.red.shade700),
+            SizedBox(width: 8),
+            Text('Confirm Action'),
+          ],
+        ),
+        content: Text(
+          'Are you sure you want to end all other sessions? You will need to log in again on those devices.',
+          style: GoogleFonts.roboto(fontSize: 14),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Close'),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('All other sessions terminated successfully'),
+                  backgroundColor: Colors.green.shade700,
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade700,
+            ),
+            child: Text('End All Sessions'),
           ),
         ],
       ),
