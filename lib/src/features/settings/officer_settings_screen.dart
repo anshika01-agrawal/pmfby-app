@@ -148,7 +148,7 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
                   // Workflow Settings
                   _buildSettingSection(
                     'Workflow Settings',
-                    Icons.workflow,
+                    Icons.work_outline,
                     [
                       _buildSwitchTile(
                         'Auto Approval',
