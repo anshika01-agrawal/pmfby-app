@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../../models/insurance_claim.dart';
+import '../../providers/language_provider.dart';
+import '../../localization/app_localizations.dart';
 
 class ClaimsListScreen extends StatefulWidget {
   const ClaimsListScreen({super.key});
@@ -137,56 +140,61 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(
-        title: Text(
-          'मेरे दावे',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-        ),
-        backgroundColor: Colors.green.shade700,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.white,
-          indicatorWeight: 3,
-          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 13),
-          tabs: const [
-            Tab(text: 'सक्रिय'),
-            Tab(text: 'स्वीकृत'),
-            Tab(text: 'पिछले'),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            onPressed: () => context.push('/file-claim'),
-            tooltip: 'नया दावा दर्ज करें',
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        final lang = languageProvider.currentLanguage;
+        return Scaffold(
+          backgroundColor: Colors.grey.shade50,
+          appBar: AppBar(
+            title: Text(
+              AppStrings.get('claims', 'my_claims', lang),
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            ),
+            backgroundColor: Colors.green.shade700,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            bottom: TabBar(
+              controller: _tabController,
+              indicatorColor: Colors.white,
+              indicatorWeight: 3,
+              labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 13),
+              tabs: [
+                Tab(text: AppStrings.get('claims', 'active', lang)),
+                Tab(text: AppStrings.get('status', 'approved', lang)),
+                Tab(text: AppStrings.get('claims', 'history', lang)),
+              ],
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.add_circle_outline),
+                onPressed: () => context.push('/file-claim'),
+                tooltip: AppStrings.get('actions', 'file_claim', lang),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildClaimsList('active'),
-          _buildClaimsList('approved'),
-          _buildClaimsList('history'),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/file-claim'),
-        backgroundColor: Colors.green.shade700,
-        icon: const Icon(Icons.add),
-        label: Text(
-          'नया दावा',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-        ),
-      ),
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildClaimsList('active', lang),
+              _buildClaimsList('approved', lang),
+              _buildClaimsList('history', lang),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () => context.push('/file-claim'),
+            backgroundColor: Colors.green.shade700,
+            icon: const Icon(Icons.add),
+            label: Text(
+              AppStrings.get('claims', 'new_claim', lang),
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildClaimsList(String status) {
+  Widget _buildClaimsList(String status, String lang) {
     final claims = _getDemoClaims(status);
 
     if (claims.isEmpty) {

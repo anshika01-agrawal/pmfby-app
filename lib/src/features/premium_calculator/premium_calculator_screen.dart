@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'data/india_data.dart';
+import '../../providers/language_provider.dart';
+import '../../localization/app_localizations.dart';
 
 class PremiumCalculatorScreen extends StatefulWidget {
   const PremiumCalculatorScreen({super.key});
@@ -286,75 +289,78 @@ class _PremiumCalculatorScreenState extends State<PremiumCalculatorScreen> {
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Premium Calculator',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-        ),
-        backgroundColor: Colors.green.shade700,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.green.shade700,
-              Colors.white,
-            ],
-            stops: const [0.0, 0.3],
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        final lang = languageProvider.currentLanguage;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              AppStrings.get('premium', 'premium_calculator', lang),
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            ),
+            backgroundColor: Colors.green.shade700,
+            foregroundColor: Colors.white,
+            elevation: 0,
           ),
-        ),
-        child: Column(
-          children: [
-            // Header section
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.calculate_outlined,
-                    size: 60,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'बीमा प्रीमियम कैलकुलेटर',
-                    style: GoogleFonts.notoSans(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Calculate your crop insurance premium',
-                    style: GoogleFonts.roboto(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.9),
-                    ),
-                  ),
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.green.shade700,
+                  Colors.white,
                 ],
+                stops: const [0.0, 0.3],
               ),
             ),
-            
-            // Form section
-            Expanded(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
+            child: Column(
+              children: [
+                // Header section
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.calculate_outlined,
+                        size: 60,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        AppStrings.get('premium', 'insurance_premium_calculator', lang),
+                        style: GoogleFonts.notoSans(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        AppStrings.get('premium', 'calculate_crop_insurance', lang),
+                        style: GoogleFonts.roboto(
+                          fontSize: 14,
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Form(
-                    key: _formKey,
+                
+                // Form section
+                Expanded(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(20),
+                      child: Form(
+                        key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -561,6 +567,8 @@ class _PremiumCalculatorScreenState extends State<PremiumCalculatorScreen> {
           ],
         ),
       ),
+    );
+      },
     );
   }
   
