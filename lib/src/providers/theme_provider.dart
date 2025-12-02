@@ -70,6 +70,11 @@ class ThemeProvider with ChangeNotifier {
         foregroundColor: Colors.white,
         elevation: 2,
         centerTitle: false,
+        titleTextStyle: GoogleFonts.poppins(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
       ),
       cardTheme: CardThemeData(
         color: Colors.white,
@@ -77,6 +82,7 @@ class ThemeProvider with ChangeNotifier {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
+        shadowColor: Colors.black.withOpacity(0.1),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -85,6 +91,7 @@ class ThemeProvider with ChangeNotifier {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -95,12 +102,18 @@ class ThemeProvider with ChangeNotifier {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.indigo.shade700, width: 2),
         ),
+        filled: true,
+        fillColor: Colors.white,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
         selectedItemColor: Colors.indigo.shade700,
         unselectedItemColor: Colors.grey.shade600,
         type: BottomNavigationBarType.fixed,
+      ),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.indigo,
+        brightness: Brightness.light,
       ),
     );
   }
@@ -118,6 +131,11 @@ class ThemeProvider with ChangeNotifier {
         foregroundColor: Colors.white,
         elevation: 2,
         centerTitle: false,
+        titleTextStyle: GoogleFonts.poppins(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
       ),
       cardTheme: CardThemeData(
         color: const Color(0xFF1E1E1E),
@@ -125,6 +143,7 @@ class ThemeProvider with ChangeNotifier {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
+        shadowColor: Colors.black.withOpacity(0.3),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -133,6 +152,7 @@ class ThemeProvider with ChangeNotifier {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -153,12 +173,25 @@ class ThemeProvider with ChangeNotifier {
         unselectedItemColor: Colors.grey.shade400,
         type: BottomNavigationBarType.fixed,
       ),
-      textTheme: const TextTheme(
+      textTheme: TextTheme(
         bodyLarge: TextStyle(color: Colors.white),
         bodyMedium: TextStyle(color: Colors.white70),
         titleLarge: TextStyle(color: Colors.white),
         titleMedium: TextStyle(color: Colors.white),
         titleSmall: TextStyle(color: Colors.white70),
+        headlineLarge: TextStyle(color: Colors.white),
+        headlineMedium: TextStyle(color: Colors.white),
+        headlineSmall: TextStyle(color: Colors.white),
+        displayLarge: TextStyle(color: Colors.white),
+        displayMedium: TextStyle(color: Colors.white),
+        displaySmall: TextStyle(color: Colors.white),
+        labelLarge: TextStyle(color: Colors.white),
+        labelMedium: TextStyle(color: Colors.white70),
+        labelSmall: TextStyle(color: Colors.white70),
+      ),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.indigo,
+        brightness: Brightness.dark,
       ),
     );
   }

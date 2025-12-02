@@ -324,96 +324,30 @@ class _KrashiBandhuAppState extends State<KrashiBandhuApp> {
 
   @override
   Widget build(BuildContext context) {
-    const Color primarySeedColor = Color(0xFF2E7D32); // Deep Green
-    const Color secondaryColor = Color(0xFFFFA000); // Amber
-
-    final TextTheme appTextTheme = TextTheme(
-      displayLarge: GoogleFonts.poppins(fontSize: 57, fontWeight: FontWeight.bold),
-      titleLarge: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500),
-      bodyMedium: GoogleFonts.notoSans(fontSize: 14),
-      labelLarge: GoogleFonts.roboto(fontSize: 14, fontWeight: FontWeight.bold),
-    );
-
-    final ThemeData lightTheme = ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primarySeedColor,
-        brightness: Brightness.light,
-        secondary: secondaryColor,
-      ),
-      textTheme: appTextTheme,
-      appBarTheme: AppBarTheme(
-        backgroundColor: primarySeedColor,
-        foregroundColor: Colors.white,
-        titleTextStyle: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: primarySeedColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
-      ),
-      cardTheme: CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-      ),
-    );
-
-    final ThemeData darkTheme = ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primarySeedColor,
-        brightness: Brightness.dark,
-        secondary: secondaryColor,
-      ),
-      textTheme: appTextTheme,
-      appBarTheme: AppBarTheme(
-        backgroundColor: Colors.grey[900],
-        foregroundColor: Colors.white,
-        titleTextStyle: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.black,
-          backgroundColor: secondaryColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
-      ),
-      cardTheme: CardThemeData(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-      ),
-    );
-
-    final themeProvider = context.watch<ThemeProvider>();
-    
-    return MaterialApp(
-      title: 'Krishi Bandhu - PMFBY',
-      theme: ThemeProvider.lightTheme,
-      darkTheme: ThemeProvider.darkTheme,
-      themeMode: themeProvider.themeMode,
-      debugShowCheckedModeBanner: false,
-      home: _initialized
-          ? MultiProvider(
-              providers: [
-                ChangeNotifierProvider.value(value: _authProvider),
-                ChangeNotifierProvider(create: (_) => FirebaseAuthService()),
-                ChangeNotifierProvider.value(value: _connectivityService),
-                Provider.value(value: _autoSyncService),
-                ChangeNotifierProvider(create: (_) => ImageUploadService()),
-              ],
-              child: const MainApp(),
-            )
-          : SplashScreen(
-              onInitializationComplete: _initialize,
-            ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'Krishi Bandhu - PMFBY',
+          theme: ThemeProvider.lightTheme,
+          darkTheme: ThemeProvider.darkTheme,
+          themeMode: themeProvider.themeMode,
+          debugShowCheckedModeBanner: false,
+          home: _initialized
+              ? MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider.value(value: _authProvider),
+                    ChangeNotifierProvider(create: (_) => FirebaseAuthService()),
+                    ChangeNotifierProvider.value(value: _connectivityService),
+                    Provider.value(value: _autoSyncService),
+                    ChangeNotifierProvider(create: (_) => ImageUploadService()),
+                  ],
+                  child: const MainApp(),
+                )
+              : SplashScreen(
+                  onInitializationComplete: _initialize,
+                ),
+        );
+      },
     );
   }
 }
@@ -423,15 +357,17 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
-    
-    return MaterialApp.router(
-      routerConfig: _buildRouter(context),
-      title: 'PMFBY - Pradhan Mantri Fasal Bima Yojana',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeProvider.lightTheme,
-      darkTheme: ThemeProvider.darkTheme,
-      themeMode: themeProvider.themeMode,
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp.router(
+          routerConfig: _buildRouter(context),
+          title: 'PMFBY - Pradhan Mantri Fasal Bima Yojana',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeProvider.lightTheme,
+          darkTheme: ThemeProvider.darkTheme,
+          themeMode: themeProvider.themeMode,
+        );
+      },
     );
   }
 }
