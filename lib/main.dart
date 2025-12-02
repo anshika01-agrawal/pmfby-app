@@ -43,6 +43,7 @@ import 'src/services/image_upload_service.dart';
 import 'src/services/connectivity_service.dart';
 import 'src/services/auto_sync_service.dart';
 import 'src/providers/language_provider.dart';
+import 'src/providers/theme_provider.dart';
 import 'src/features/splash/splash_screen.dart';
 
 void main() {
@@ -406,8 +407,8 @@ class _KrashiBandhuAppState extends State<KrashiBandhuApp> {
     
     return MaterialApp(
       title: 'Krishi Bandhu - PMFBY',
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: ThemeProvider.lightTheme,
+      darkTheme: ThemeProvider.darkTheme,
       themeMode: themeProvider.themeMode,
       debugShowCheckedModeBanner: false,
       home: _initialized
@@ -433,11 +434,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+    
     return MaterialApp.router(
       routerConfig: _buildRouter(context),
       title: 'PMFBY - Pradhan Mantri Fasal Bima Yojana',
       debugShowCheckedModeBanner: false,
-      theme: PMFBYTheme.lightTheme,
+      theme: ThemeProvider.lightTheme,
+      darkTheme: ThemeProvider.darkTheme,
+      themeMode: themeProvider.themeMode,
     );
   }
 }

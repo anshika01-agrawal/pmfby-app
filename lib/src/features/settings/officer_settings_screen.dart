@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../localization/app_localizations.dart';
 import '../../providers/language_provider.dart';
+import '../../providers/theme_provider.dart';
 import '../../services/firebase_auth_service.dart';
 import 'language_settings_screen.dart';
 
@@ -32,6 +33,30 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
   final _phoneController = TextEditingController(text: '+91 9876543210');
   
   @override
+  void initState() {
+    super.initState();
+    // Load current theme state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+      setState(() {
+        _darkMode = themeProvider.isDarkMode;
+      });
+    });
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    // Load current theme state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+      setState(() {
+        _darkMode = themeProvider.isDarkMode;
+      });
+    });
+  }
+  
+  @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
@@ -41,8 +66,8 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LanguageProvider>(
-      builder: (context, languageProvider, child) {
+    return Consumer2<LanguageProvider, ThemeProvider>(
+      builder: (context, languageProvider, themeProvider, child) {
         return Scaffold(
           appBar: AppBar(
             title: Text(
@@ -92,7 +117,23 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
                         'Switch to dark theme',
                         Icons.dark_mode,
                         _darkMode,
-                        (value) => setState(() => _darkMode = value),
+                        (value) async {
+                          setState(() => _darkMode = value);
+                          final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+                          await themeProvider.setThemeMode(value);
+                          
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  value ? 'Dark mode enabled' : 'Light mode enabled',
+                                ),
+                                backgroundColor: value ? Colors.grey.shade800 : Colors.green.shade700,
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
                       ),
                       _buildListTile(
                         'Language',
