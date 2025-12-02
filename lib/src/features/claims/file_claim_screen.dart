@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import '../../services/firebase_auth_service.dart';
 import '../../services/firestore_service.dart';
 import '../../models/insurance_claim.dart';
+import '../../providers/language_provider.dart';
+import '../../localization/app_localizations.dart';
 
 class FileClaimScreen extends StatefulWidget {
   const FileClaimScreen({super.key});
@@ -122,20 +124,23 @@ class _FileClaimScreenState extends State<FileClaimScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'नया दावा दर्ज करें',
-          style: GoogleFonts.poppins(),
-        ),
-        backgroundColor: Colors.green.shade700,
-        foregroundColor: Colors.white,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        final lang = languageProvider.currentLanguage;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              AppStrings.get('claims', 'file_new_claim', lang),
+              style: GoogleFonts.poppins(),
+            ),
+            backgroundColor: Colors.green.shade700,
+            foregroundColor: Colors.white,
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Header Info
@@ -411,6 +416,8 @@ class _FileClaimScreenState extends State<FileClaimScreen> {
           ),
         ),
       ),
+    );
+      },
     );
   }
 }

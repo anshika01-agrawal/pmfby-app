@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import '../../providers/language_provider.dart';
+import '../../localization/app_localizations.dart';
 
 class SchemesScreen extends StatefulWidget {
   const SchemesScreen({super.key});
@@ -26,48 +29,53 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(
-        title: Text(
-          'बीमा योजनाएं',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-        ),
-        backgroundColor: Colors.green.shade700,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.white,
-          indicatorWeight: 3,
-          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14),
-          tabs: const [
-            Tab(text: 'सभी योजनाएं'),
-            Tab(text: 'पात्रता जांच'),
-          ],
-        ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildSchemesTab(),
-          _buildEligibilityTab(),
-        ],
-      ),
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        final lang = languageProvider.currentLanguage;
+        return Scaffold(
+          backgroundColor: Colors.grey.shade50,
+          appBar: AppBar(
+            title: Text(
+              AppStrings.get('schemes', 'insurance_schemes', lang),
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            ),
+            backgroundColor: Colors.green.shade700,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            bottom: TabBar(
+              controller: _tabController,
+              indicatorColor: Colors.white,
+              indicatorWeight: 3,
+              labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14),
+              tabs: [
+                Tab(text: AppStrings.get('schemes', 'all_schemes', lang)),
+                Tab(text: AppStrings.get('schemes', 'eligibility_check', lang)),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildSchemesTab(lang),
+              _buildEligibilityTab(lang),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildSchemesTab() {
+  Widget _buildSchemesTab(String lang) {
     return ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
         // PMFBY Main Card - Featured
-        _buildFeaturedSchemeCard(),
+        _buildFeaturedSchemeCard(lang),
         
         const SizedBox(height: 24),
         
         Text(
-          'अन्य योजनाएं',
+          AppStrings.get('schemes', 'other_schemes', lang),
           style: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -167,7 +175,7 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
     );
   }
 
-  Widget _buildFeaturedSchemeCard() {
+  Widget _buildFeaturedSchemeCard(String lang) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -583,7 +591,7 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
     );
   }
 
-  Widget _buildEligibilityTab() {
+  Widget _buildEligibilityTab(String lang) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
