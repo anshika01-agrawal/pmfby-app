@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'providers/auth_provider.dart';
+import '../domain/models/user_model.dart';
 import '../../../utils/demo_users.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -144,17 +145,24 @@ Future<void> _verifyOTP() async {
 
   try {
     final phoneNumber = _phoneController.text;
-    final demoUser = DemoUsers.findByPhone(phoneNumber);
+    final demoUserData = DemoUsers.findByPhone(phoneNumber);
     
     // For demo users, check if OTP is 123456
-    if (demoUser != null && DemoUsers.isValidOTP(_otpController.text)) {
+    if (demoUserData != null && DemoUsers.isValidOTP(_otpController.text)) {
+      // Convert demo user map to User model and set in AuthProvider
+      final user = DemoUsers.getUserFromDemoData(demoUserData);
+      if (user != null) {
+        final authProvider = context.read<AuthProvider>();
+        authProvider.setDemoUser(user);
+      }
+      
       // Simulate successful authentication
       await Future.delayed(const Duration(seconds: 1));
       
       if (mounted) {
-        _showSuccess('Login successful! Welcome ${demoUser['name']}');
+        _showSuccess('Login successful! Welcome ${demoUserData['name']}');
         // Route based on role
-        final role = demoUser['role'];
+        final role = demoUserData['role'];
         if (role == 'official') {
           context.go('/officer-dashboard');
         } else {

@@ -28,6 +28,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
   OfficerLevel _officerLevel = OfficerLevel.district; // Demo: District officer
   String _selectedState = 'Punjab';
   String _selectedDistrict = 'Ludhiana';
+  String _selectedClaimFilter = 'all'; // Filter for claims: all, pending, approved, rejected
 
   // Demo statistics data
   final Map<String, dynamic> _stats = {
@@ -329,7 +330,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 1.5,
+                      childAspectRatio: 1.2,
                       children: [
                         _buildStatCard(
                           AppStrings.get('officer', 'total_claims', languageProvider.currentLanguage),
@@ -554,21 +555,59 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
             color: Colors.grey.shade100,
             child: Row(
               children: [
-                _buildFilterChip(AppStrings.get('officer', 'all_claims', languageProvider.currentLanguage), _stats['total_claims']),
-                _buildFilterChip(AppStrings.get('status', 'pending', languageProvider.currentLanguage), _stats['pending_claims']),
-                _buildFilterChip(AppStrings.get('claims', 'approved_claims', languageProvider.currentLanguage), _stats['approved_claims']),
-                _buildFilterChip(AppStrings.get('officer', 'rejected', languageProvider.currentLanguage), _stats['rejected_claims']),
+                _buildFilterChip(AppStrings.get('officer', 'all_claims', languageProvider.currentLanguage), _stats['total_claims'], 'all'),
+                _buildFilterChip(AppStrings.get('status', 'pending', languageProvider.currentLanguage), _stats['pending_claims'], 'pending'),
+                _buildFilterChip(AppStrings.get('claims', 'approved_claims', languageProvider.currentLanguage), _stats['approved_claims'], 'approved'),
+                _buildFilterChip(AppStrings.get('officer', 'rejected', languageProvider.currentLanguage), _stats['rejected_claims'], 'rejected'),
               ],
             ),
           ),
 
           // Claims List
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _recentClaims.length,
-              itemBuilder: (context, index) {
-                return _buildDetailedClaimCard(_recentClaims[index], languageProvider.currentLanguage);
+            child: Builder(
+              builder: (context) {
+                // Filter claims based on selected filter
+                final filteredClaims = _selectedClaimFilter == 'all'
+                    ? _recentClaims
+                    : _recentClaims.where((claim) {
+                        final status = claim['status'] as String;
+                        if (_selectedClaimFilter == 'pending') {
+                          return status == 'pending' || status == 'under_review';
+                        } else if (_selectedClaimFilter == 'approved') {
+                          return status == 'approved';
+                        } else if (_selectedClaimFilter == 'rejected') {
+                          return status == 'rejected';
+                        }
+                        return true;
+                      }).toList();
+
+                if (filteredClaims.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.inbox, size: 64, color: Colors.grey.shade400),
+                        const SizedBox(height: 16),
+                        Text(
+                          AppStrings.get('claims', 'no_claims_found', languageProvider.currentLanguage),
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: filteredClaims.length,
+                  itemBuilder: (context, index) {
+                    return _buildDetailedClaimCard(filteredClaims[index], languageProvider.currentLanguage);
+                  },
+                );
               },
             ),
           ),
@@ -767,7 +806,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
 
   Widget _buildStatCard(String title, String value, IconData icon, Color color, String subtitle) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -792,41 +831,46 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(icon, color: color, size: 24),
+                child: Icon(icon, color: color, size: 20),
               ),
             ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade800,
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  value,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade800,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: GoogleFonts.roboto(
-                  fontSize: 11,
-                  color: Colors.grey.shade600,
+                const SizedBox(height: 2),
+                Text(
+                  title,
+                  style: GoogleFonts.roboto(
+                    fontSize: 10,
+                    color: Colors.grey.shade600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: GoogleFonts.roboto(
-                  fontSize: 9,
-                  color: color,
-                  fontWeight: FontWeight.w600,
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.roboto(
+                    fontSize: 9,
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -1102,14 +1146,18 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
     );
   }
 
-  Widget _buildFilterChip(String label, int count) {
+  Widget _buildFilterChip(String label, int count, String filterValue) {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.all(4),
         child: FilterChip(
-          label: Text('$label ($count)'),
-          selected: false,
-          onSelected: (selected) {},
+          label: Text('$label ($count)', style: TextStyle(fontSize: 11)),
+          selected: _selectedClaimFilter == filterValue,
+          onSelected: (selected) {
+            setState(() {
+              _selectedClaimFilter = filterValue;
+            });
+          },
         ),
       ),
     );
