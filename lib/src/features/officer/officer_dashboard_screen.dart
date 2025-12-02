@@ -498,17 +498,17 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
           backgroundColor: Colors.indigo.shade700,
           foregroundColor: Colors.white,
           actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: _showFilterDialog,
-          ),
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: Column(
+            IconButton(
+              icon: const Icon(Icons.filter_list),
+              onPressed: _showFilterDialog,
+            ),
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {},
+            ),
+          ],
+        ),
+        body: Column(
         children: [
           // Filter Tabs
           Container(
@@ -534,6 +534,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }
@@ -685,8 +686,8 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
           foregroundColor: Colors.white,
         ),
         body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
+          padding: const EdgeInsets.all(16),
+          children: [
           _buildReportCard(
             'Monthly Claims Report',
             'Complete claims data for the month',
@@ -718,6 +719,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
             Colors.purple,
           ),
         ],
+      ),
       ),
     );
   }
