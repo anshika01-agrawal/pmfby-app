@@ -97,82 +97,164 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   void _showLocationSearchDialog() {
+    final locationsList = [
+      'Delhi', 'Mumbai', 'Bangalore', 'Kolkata', 'Chennai', 
+      'Hyderabad', 'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow',
+      'Chandigarh', 'Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala',
+      'Hisar', 'Karnal', 'Rohtak', 'Panipat', 'Ambala',
+    ];
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            Icon(Icons.search, color: Colors.blue.shade700),
-            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.indigo.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(Icons.search, color: Colors.indigo.shade700, size: 24),
+            ),
+            const SizedBox(width: 12),
             const Text('Search Location'),
           ],
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _locationController,
-              decoration: InputDecoration(
-                hintText: 'Enter city or district name',
-                prefixIcon: const Icon(Icons.location_city),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _locationController,
+                autofocus: true,
+                style: GoogleFonts.roboto(fontSize: 16),
+                decoration: InputDecoration(
+                  hintText: 'Type city or district name...',
+                  prefixIcon: Icon(Icons.location_city, color: Colors.indigo.shade600),
+                  filled: true,
+                  fillColor: Colors.grey.shade50,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.indigo.shade400, width: 2),
+                  ),
+                ),
+                onSubmitted: (value) {
+                  if (value.isNotEmpty) {
+                    setState(() {
+                      _selectedLocation = value;
+                      _useCurrentLocation = false;
+                    });
+                    Navigator.pop(context);
+                    _fetchWeatherData();
+                    _locationController.clear();
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Popular Locations',
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade700,
+                  ),
                 ),
               ),
-              onSubmitted: (value) {
-                if (value.isNotEmpty) {
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 200,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: locationsList.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      dense: true,
+                      leading: Icon(Icons.location_on, color: Colors.indigo.shade400, size: 20),
+                      title: Text(
+                        locationsList[index],
+                        style: GoogleFonts.roboto(fontSize: 15),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          _selectedLocation = locationsList[index];
+                          _useCurrentLocation = false;
+                        });
+                        Navigator.pop(context);
+                        _fetchWeatherData();
+                      },
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _useCurrentLocation = true;
+                      _selectedLocation = null;
+                    });
+                    Navigator.pop(context);
+                    _getCurrentLocationAndWeather();
+                  },
+                  icon: const Icon(Icons.my_location),
+                  label: const Text('Use My Current Location'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigo.shade700,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _locationController.clear();
+            },
+            child: Text('Cancel', style: TextStyle(color: Colors.grey.shade600)),
+          ),
+          if (_locationController.text.isNotEmpty)
+            ElevatedButton(
+              onPressed: () {
+                if (_locationController.text.isNotEmpty) {
                   setState(() {
-                    _selectedLocation = value;
+                    _selectedLocation = _locationController.text;
                     _useCurrentLocation = false;
                   });
                   Navigator.pop(context);
                   _fetchWeatherData();
+                  _locationController.clear();
                 }
               },
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      setState(() {
-                        _useCurrentLocation = true;
-                        _selectedLocation = null;
-                      });
-                      Navigator.pop(context);
-                      _getCurrentLocationAndWeather();
-                    },
-                    icon: const Icon(Icons.my_location),
-                    label: const Text('Use Current'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade700,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.indigo.shade700,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              ],
+              ),
+              child: const Text('Apply'),
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (_locationController.text.isNotEmpty) {
-                setState(() {
-                  _selectedLocation = _locationController.text;
-                  _useCurrentLocation = false;
-                });
-                Navigator.pop(context);
-                _fetchWeatherData();
-              }
-            },
-            child: const Text('Search'),
-          ),
         ],
       ),
     );
@@ -203,20 +285,40 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Map<String, dynamic> _getDemoWeatherData() {
+    // Generate location-based realistic data
+    final location = _useCurrentLocation 
+        ? (_currentLocation ?? 'Delhi')
+        : (_selectedLocation ?? 'Delhi');
+    
+    // Simulate realistic weather based on location
+    final temps = {
+      'Delhi': {'temp': 26, 'feels': 28, 'humidity': 62},
+      'Mumbai': {'temp': 31, 'feels': 34, 'humidity': 78},
+      'Bangalore': {'temp': 24, 'feels': 25, 'humidity': 65},
+      'Chennai': {'temp': 33, 'feels': 36, 'humidity': 75},
+      'Kolkata': {'temp': 29, 'feels': 32, 'humidity': 80},
+      'Hyderabad': {'temp': 30, 'feels': 33, 'humidity': 55},
+      'Pune': {'temp': 27, 'feels': 29, 'humidity': 60},
+      'Jaipur': {'temp': 28, 'feels': 31, 'humidity': 45},
+    };
+    
+    final data = temps[location] ?? temps['Delhi']!;
+    
     return {
-      'temp': 28,
-      'feels_like': 30,
-      'humidity': 65,
-      'wind_speed': 12,
-      'pressure': 1012,
-      'visibility': 10,
-      'uv_index': 7,
-      'rainfall': 2.5,
-      'condition': 'Partly Cloudy',
-      'icon': Icons.cloud,
+      'temp': data['temp'],
+      'feels_like': data['feels'],
+      'humidity': data['humidity'],
+      'wind_speed': 12 + (location.hashCode % 10),
+      'pressure': 1010 + (location.hashCode % 15),
+      'visibility': 8 + (location.hashCode % 5),
+      'uv_index': 5 + (location.hashCode % 6),
+      'rainfall': (location.hashCode % 5).toDouble(),
+      'condition': data['humidity']! > 70 ? 'Cloudy' : 'Partly Cloudy',
+      'icon': data['humidity']! > 70 ? Icons.cloud : Icons.wb_cloudy,
       'sunrise': '06:15',
       'sunset': '18:45',
-      'aqi': 85, // Air Quality Index
+      'aqi': 70 + (location.hashCode % 40),
+      'location': location,
     };
   }
 
@@ -240,8 +342,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.blue.shade50,
-            Colors.white,
+            Colors.indigo.shade50,
+            Colors.grey.shade50,
           ],
         ),
       ),
@@ -252,67 +354,106 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 // Location Header with Search
                 SliverToBoxAdapter(
                   child: Container(
-                    margin: const EdgeInsets.all(16),
-                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.shade200,
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
+                          color: Colors.indigo.shade100.withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
                     child: Row(
                       children: [
-                        Icon(
-                          _useCurrentLocation ? Icons.my_location : Icons.location_on,
-                          color: Colors.blue.shade700,
-                          size: 28,
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.indigo.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            _useCurrentLocation ? Icons.my_location : Icons.location_city,
+                            color: Colors.indigo.shade700,
+                            size: 24,
+                          ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _isLoadingLocation
-                                  ? const SizedBox(
-                                      width: 16,
-                                      height: 16,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                  ? SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.5,
+                                        color: Colors.indigo.shade600,
+                                      ),
                                     )
                                   : Text(
                                       _useCurrentLocation 
                                           ? (_currentLocation ?? 'Unknown')
                                           : (_selectedLocation ?? 'Delhi'),
                                       style: GoogleFonts.poppins(
-                                        fontSize: 18,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.bold,
+                                        color: Colors.grey.shade800,
                                       ),
                                     ),
-                              Text(
-                                _useCurrentLocation ? 'Live Location' : 'Selected Location',
-                                style: GoogleFonts.roboto(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade600,
-                                ),
+                              const SizedBox(height: 2),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: _useCurrentLocation ? Colors.green : Colors.indigo.shade400,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    _useCurrentLocation ? 'Live Location' : 'Custom Location',
+                                    style: GoogleFonts.roboto(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade600,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.search),
-                          onPressed: _showLocationSearchDialog,
-                          tooltip: 'Search Location',
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.indigo.shade50,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.search, color: Colors.indigo.shade700),
+                            onPressed: _showLocationSearchDialog,
+                            tooltip: 'Change Location',
+                          ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.refresh),
-                          onPressed: _useCurrentLocation 
-                              ? _getCurrentLocationAndWeather 
-                              : _fetchWeatherData,
-                          tooltip: 'Refresh',
+                        const SizedBox(width: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.indigo.shade50,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.refresh, color: Colors.indigo.shade700),
+                            onPressed: _useCurrentLocation 
+                                ? _getCurrentLocationAndWeather 
+                                : _fetchWeatherData,
+                            tooltip: 'Refresh Data',
+                          ),
                         ),
                       ],
                     ),
@@ -387,76 +528,204 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Widget _buildCurrentWeatherCard() {
     return Container(
       margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.blue.shade400,
-            Colors.blue.shade700,
+            Colors.indigo.shade700,
+            Colors.indigo.shade900,
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.blue.shade200,
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+            color: Colors.indigo.shade300.withOpacity(0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
-      child: Column(
+      child: Stack(
         children: [
-          Icon(
-            _weatherData!['icon'],
-            size: 80,
-            color: Colors.white,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '${_weatherData!['temp']}°C',
-            style: GoogleFonts.poppins(
-              fontSize: 56,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          // Decorative circles
+          Positioned(
+            right: -30,
+            top: -30,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.05),
+              ),
             ),
           ),
-          Text(
-            _weatherData!['condition'],
-            style: GoogleFonts.roboto(
-              fontSize: 20,
-              color: Colors.white.withOpacity(0.9),
+          Positioned(
+            left: -20,
+            bottom: -20,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.05),
+              ),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Feels like ${_weatherData!['feels_like']}°C',
-            style: GoogleFonts.roboto(
-              fontSize: 16,
-              color: Colors.white.withOpacity(0.8),
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(28),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              color: Colors.white.withOpacity(0.9),
+                              size: 18,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              _weatherData!['location'],
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white.withOpacity(0.9),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          DateFormat('EEEE, MMM d').format(DateTime.now()),
+                          style: GoogleFonts.roboto(
+                            fontSize: 13,
+                            color: Colors.white.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.update,
+                            color: Colors.white.withOpacity(0.9),
+                            size: 14,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Live',
+                            style: GoogleFonts.roboto(
+                              fontSize: 12,
+                              color: Colors.white.withOpacity(0.9),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${_weatherData!['temp']}°',
+                          style: GoogleFonts.poppins(
+                            fontSize: 72,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            height: 1.0,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _weatherData!['condition'],
+                          style: GoogleFonts.roboto(
+                            fontSize: 18,
+                            color: Colors.white.withOpacity(0.9),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Feels like ${_weatherData!['feels_like']}°C',
+                          style: GoogleFonts.roboto(
+                            fontSize: 14,
+                            color: Colors.white.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Icon(
+                      _weatherData!['icon'],
+                      size: 100,
+                      color: Colors.white.withOpacity(0.9),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 28),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildWeatherStat(
+                        Icons.water_drop,
+                        '${_weatherData!['humidity']}%',
+                        'Humidity',
+                      ),
+                      Container(
+                        width: 1,
+                        height: 40,
+                        color: Colors.white.withOpacity(0.2),
+                      ),
+                      _buildWeatherStat(
+                        Icons.air,
+                        '${_weatherData!['wind_speed']} km/h',
+                        'Wind',
+                      ),
+                      Container(
+                        width: 1,
+                        height: 40,
+                        color: Colors.white.withOpacity(0.2),
+                      ),
+                      _buildWeatherStat(
+                        Icons.grain,
+                        '${_weatherData!['rainfall']} mm',
+                        'Rain',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildWeatherStat(
-                Icons.water_drop,
-                '${_weatherData!['humidity']}%',
-                'Humidity',
-              ),
-              _buildWeatherStat(
-                Icons.air,
-                '${_weatherData!['wind_speed']} km/h',
-                'Wind',
-              ),
-              _buildWeatherStat(
-                Icons.grain,
-                '${_weatherData!['rainfall']} mm',
-                'Rain',
-              ),
-            ],
           ),
         ],
       ),
