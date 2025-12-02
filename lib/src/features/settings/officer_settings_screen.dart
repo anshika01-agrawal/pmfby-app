@@ -24,6 +24,20 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
   String _reportFrequency = 'weekly';
   double _claimThreshold = 50000.0;
   bool _showTutorials = true;
+  
+  // Profile editing state
+  bool _isEditingProfile = false;
+  final _nameController = TextEditingController(text: 'Officer Name');
+  final _emailController = TextEditingController(text: 'officer@pmfby.gov.in');
+  final _phoneController = TextEditingController(text: '+91 9876543210');
+  
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -264,54 +278,55 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
         children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.indigo.shade100,
-            child: Icon(
-              Icons.person,
-              size: 30,
-              color: Colors.indigo.shade700,
-            ),
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: Colors.indigo.shade100,
+                child: Icon(
+                  Icons.person,
+                  size: 30,
+                  color: Colors.indigo.shade700,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _isEditingProfile ? _buildEditableProfile() : _buildStaticProfile(),
+              ),
+              IconButton(
+                onPressed: _toggleEditProfile,
+                icon: Icon(
+                  _isEditingProfile ? Icons.check : Icons.edit,
+                  color: Colors.indigo.shade700,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          if (_isEditingProfile) ..[
+            const SizedBox(height: 20),
+            Row(
               children: [
-                Text(
-                  'Officer Name',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade800,
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _cancelEditProfile,
+                    child: Text('Cancel'),
                   ),
                 ),
-                Text(
-                  'District Officer, Ludhiana',
-                  style: GoogleFonts.roboto(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                Text(
-                  'officer@pmfby.gov.in',
-                  style: GoogleFonts.roboto(
-                    fontSize: 12,
-                    color: Colors.grey.shade500,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _saveProfile,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigo.shade700,
+                    ),
+                    child: Text('Save'),
                   ),
                 ),
               ],
             ),
-          ),
-          IconButton(
-            onPressed: () => _editProfile(),
-            icon: Icon(
-              Icons.edit,
-              color: Colors.indigo.shade700,
-            ),
-          ),
+          ],
         ],
       ),
     );
@@ -556,14 +571,143 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
     );
   }
 
-  // Action Methods
-  void _editProfile() {
+  // Profile editing methods
+  Widget _buildStaticProfile() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          _nameController.text,
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade800,
+          ),
+        ),
+        Text(
+          'District Officer, Ludhiana',
+          style: GoogleFonts.roboto(
+            fontSize: 14,
+            color: Colors.grey.shade600,
+          ),
+        ),
+        Text(
+          _emailController.text,
+          style: GoogleFonts.roboto(
+            fontSize: 12,
+            color: Colors.grey.shade500,
+          ),
+        ),
+        Text(
+          _phoneController.text,
+          style: GoogleFonts.roboto(
+            fontSize: 12,
+            color: Colors.grey.shade500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEditableProfile() {
+    return Column(
+      children: [
+        TextField(
+          controller: _nameController,
+          decoration: InputDecoration(
+            labelText: 'Officer Name',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.person),
+          ),
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _emailController,
+          decoration: InputDecoration(
+            labelText: 'Email',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.email),
+          ),
+          keyboardType: TextInputType.emailAddress,
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _phoneController,
+          decoration: InputDecoration(
+            labelText: 'Phone Number',
+            border: OutlineInputBorder(),
+            prefixIcon: Icon(Icons.phone),
+          ),
+          keyboardType: TextInputType.phone,
+        ),
+      ],
+    );
+  }
+
+  void _toggleEditProfile() {
+    setState(() {
+      _isEditingProfile = !_isEditingProfile;
+    });
+  }
+
+  void _cancelEditProfile() {
+    setState(() {
+      _isEditingProfile = false;
+      // Reset controllers to original values
+      _nameController.text = 'Officer Name';
+      _emailController.text = 'officer@pmfby.gov.in';
+      _phoneController.text = '+91 9876543210';
+    });
+  }
+
+  void _saveProfile() {
+    // Validate inputs
+    if (_nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter officer name'),
+          backgroundColor: Colors.red.shade700,
+        ),
+      );
+      return;
+    }
+    
+    if (_emailController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter email address'),
+          backgroundColor: Colors.red.shade700,
+        ),
+      );
+      return;
+    }
+    
+    if (_phoneController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter phone number'),
+          backgroundColor: Colors.red.shade700,
+        ),
+      );
+      return;
+    }
+    
+    setState(() {
+      _isEditingProfile = false;
+    });
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Profile editing feature coming soon!'),
-        backgroundColor: Colors.indigo.shade700,
+        content: Text('Profile updated successfully!'),
+        backgroundColor: Colors.green.shade700,
       ),
     );
+  }
+
+  void _editProfile() {
+    setState(() {
+      _isEditingProfile = true;
+    });
   }
 
   void _saveSettings() {
