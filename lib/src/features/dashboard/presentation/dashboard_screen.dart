@@ -101,35 +101,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> screens = [
-      _buildHomeScreen(),
-      const ClaimsListScreen(),
-      const SchemesScreen(),
-      const ProfileScreen(),
-    ];
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        final List<Widget> screens = [
+          _buildHomeScreen(),
+          const ClaimsListScreen(),
+          const SchemesScreen(),
+          const ProfileScreen(),
+        ];
 
-    return Scaffold(
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : screens[_selectedIndex],
-      floatingActionButton: _selectedIndex == 0
+        return Scaffold(
+          body: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : screens[_selectedIndex],
+          floatingActionButton: _selectedIndex == 0
           ? Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Language Settings FAB
-                FloatingActionButton(
-                  heroTag: 'language',
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const LanguageSettingsScreen(),
-                      ),
-                    );
-                  },
-                  backgroundColor: Colors.indigo.shade700,
-                  child: const Icon(Icons.language, size: 24),
-                ),
-                const SizedBox(height: 12),
                 // Customer Support FAB
                 FloatingActionButton(
                   heroTag: 'support',
@@ -169,28 +157,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
           elevation: 0,
           backgroundColor: Colors.white,
           onTap: (index) => setState(() => _selectedIndex = index),
-          items: const [
+          items: [
             BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'होम',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long_outlined),
-            activeIcon: Icon(Icons.receipt_long),
-            label: 'दावे',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_outlined),
-            activeIcon: Icon(Icons.account_balance),
-            label: 'योजनाएं',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: 'प्रोफाइल',
-          ),
-        ],
+              icon: const Icon(Icons.home_outlined),
+              activeIcon: const Icon(Icons.home),
+              label: AppStrings.get('navigation', 'home', context.read<LanguageProvider>().currentLanguage),
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.receipt_long_outlined),
+              activeIcon: const Icon(Icons.receipt_long),
+              label: AppStrings.get('navigation', 'claims', context.read<LanguageProvider>().currentLanguage),
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.account_balance_outlined),
+              activeIcon: const Icon(Icons.account_balance),
+              label: AppStrings.get('navigation', 'schemes', context.read<LanguageProvider>().currentLanguage),
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.person_outline),
+              activeIcon: const Icon(Icons.person),
+              label: AppStrings.get('navigation', 'profile', context.read<LanguageProvider>().currentLanguage),
+            ),
+          ],
         ),
       ),
     );

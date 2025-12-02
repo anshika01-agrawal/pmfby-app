@@ -151,6 +151,7 @@ GoRouter _buildRouter(BuildContext context) {
       // LOGIN + REGISTER
       GoRoute(
         path: '/login',
+        name: 'login',
         builder: (_, __) => const LoginScreen(),
       ),
       GoRoute(

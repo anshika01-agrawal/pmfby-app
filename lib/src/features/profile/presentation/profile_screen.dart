@@ -610,7 +610,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Navigator.pop(context);
               await context.read<AuthProvider>().logout();
               if (context.mounted) {
-                context.go('/login');
+                context.goNamed('login');
               }
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),

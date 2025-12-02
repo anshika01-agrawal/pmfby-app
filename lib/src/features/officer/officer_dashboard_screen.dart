@@ -77,47 +77,51 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> screens = [
-      _buildOverviewScreen(),
-      _buildClaimsManagementScreen(),
-      _buildAnalyticsScreen(),
-      _buildReportsScreen(),
-      const EnhancedSatelliteScreen(),
-    ];
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        final List<Widget> screens = [
+          _buildOverviewScreen(),
+          _buildClaimsManagementScreen(),
+          _buildAnalyticsScreen(),
+          _buildReportsScreen(),
+          const EnhancedSatelliteScreen(),
+        ];
 
-    return Scaffold(
-      body: screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.indigo.shade700,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        onTap: (index) => setState(() => _selectedIndex = index),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Overview',
+        return Scaffold(
+          body: screens[_selectedIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.indigo.shade700,
+            unselectedItemColor: Colors.grey,
+            showUnselectedLabels: true,
+            onTap: (index) => setState(() => _selectedIndex = index),
+            items: [
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.dashboard),
+                label: AppStrings.get('navigation', 'overview', languageProvider.currentLanguage),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.assignment),
+                label: AppStrings.get('navigation', 'claims', languageProvider.currentLanguage),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.analytics),
+                label: AppStrings.get('navigation', 'analytics', languageProvider.currentLanguage),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.assessment),
+                label: AppStrings.get('navigation', 'reports', languageProvider.currentLanguage),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.satellite_outlined),
+                activeIcon: const Icon(Icons.satellite),
+                label: AppStrings.get('navigation', 'satellite', languageProvider.currentLanguage),
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Claims',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
-            label: 'Analytics',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assessment),
-            label: 'Reports',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.satellite_outlined),
-            activeIcon: Icon(Icons.satellite),
-            label: 'Satellite',
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
