@@ -78,15 +78,10 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: themeProvider.isDarkMode 
-                  ? [
-                      const Color(0xFF1E1E1E),
-                      const Color(0xFF121212),
-                    ]
-                  : [
-                      Colors.indigo.shade50,
-                      Colors.white,
-                    ],
+                colors: [
+                  Colors.indigo.shade50,
+                  Colors.white,
+                ],
               ),
             ),
             child: SingleChildScrollView(
@@ -275,15 +270,14 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
   }
 
   Widget _buildProfileSection() {
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: themeProvider.isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(themeProvider.isDarkMode ? 0.3 : 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -344,14 +338,13 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
   }
 
   Widget _buildSettingSection(String title, IconData icon, List<Widget> children) {
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     return Container(
       decoration: BoxDecoration(
-        color: themeProvider.isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(themeProvider.isDarkMode ? 0.3 : 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -375,7 +368,7 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: themeProvider.isDarkMode ? Colors.white : Colors.grey.shade800,
+                    color: Colors.grey.shade800,
                   ),
                 ),
               ],
@@ -585,7 +578,6 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
 
   // Profile editing methods
   Widget _buildStaticProfile() {
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -594,28 +586,28 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
           style: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: themeProvider.isDarkMode ? Colors.white : Colors.grey.shade800,
+            color: Colors.grey.shade800,
           ),
         ),
         Text(
           'District Officer, Ludhiana',
           style: GoogleFonts.roboto(
             fontSize: 14,
-            color: themeProvider.isDarkMode ? Colors.grey.shade300 : Colors.grey.shade600,
+            color: Colors.grey.shade600,
           ),
         ),
         Text(
           _emailController.text,
           style: GoogleFonts.roboto(
             fontSize: 12,
-            color: themeProvider.isDarkMode ? Colors.grey.shade400 : Colors.grey.shade500,
+            color: Colors.grey.shade500,
           ),
         ),
         Text(
           _phoneController.text,
           style: GoogleFonts.roboto(
             fontSize: 12,
-            color: themeProvider.isDarkMode ? Colors.grey.shade400 : Colors.grey.shade500,
+            color: Colors.grey.shade500,
           ),
         ),
       ],
@@ -732,7 +724,7 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
     );
   }
 
-  void _resetSettings() async {
+  void _resetSettings() {
     setState(() {
       _notificationsEnabled = true;
       _emailNotifications = true;
@@ -743,19 +735,12 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
       _reportFrequency = 'weekly';
       _showTutorials = true;
     });
-    
-    // Reset theme to light mode
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    await themeProvider.setThemeMode(false);
-    
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Settings reset to defaults!'),
-          backgroundColor: Colors.orange.shade700,
-        ),
-      );
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Settings reset to defaults!'),
+        backgroundColor: Colors.orange.shade700,
+      ),
+    );
   }
 
   void _exportData() {
