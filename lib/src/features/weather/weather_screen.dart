@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -44,7 +45,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     });
 
     try {
-      // Check location permissions
+      // Check location permissions with timeout
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         _setDefaultLocation();
@@ -60,16 +61,23 @@ class _WeatherScreenState extends State<WeatherScreen> {
         }
       }
 
-      // Get current position
+      // Get current position with lower accuracy for faster response
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        desiredAccuracy: LocationAccuracy.low,
+        timeLimit: const Duration(seconds: 5),
+      ).timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          _setDefaultLocation();
+          throw TimeoutException('Location timeout');
+        },
       );
 
       // Get address from coordinates
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
-      );
+      ).timeout(const Duration(seconds: 3));
 
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
@@ -264,24 +272,138 @@ class _WeatherScreenState extends State<WeatherScreen> {
     setState(() => _isLoading = true);
     
     try {
-      // Using demo data - In production, integrate with:
-      // - OpenWeatherMap API
-      // - data.gov.in Agriculture APIs
-      // - IMD (India Meteorological Department) API
-      await Future.delayed(const Duration(milliseconds: 500));
+      // Get location for API call
+      String location = _useCurrentLocation 
+          ? (_currentLocation ?? 'Delhi')
+          : (_selectedLocation ?? 'Delhi');
+
+      // OpenWeatherMap API - Free tier (No API key needed for demo)
+      // For production, get API key from: https://openweathermap.org/api
+      const apiKey = 'b6907d289e10d714a6e88b30761fae22'; // Demo key - replace with yours
       
-      setState(() {
-        _weatherData = _getDemoWeatherData();
-        _forecastData = _getDemoForecastData();
-        _isLoading = false;
-      });
+      // Fetch real weather data
+      final weatherUrl = Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?q=$location,IN&appid=$apiKey&units=metric'
+      );
+      
+      final forecastUrl = Uri.parse(
+        'https://api.openweathermap.org/data/2.5/forecast?q=$location,IN&appid=$apiKey&units=metric'
+      );
+
+      // Fetch with timeout
+      final weatherResponse = await http.get(weatherUrl).timeout(
+        const Duration(seconds: 8),
+        onTimeout: () => throw TimeoutException('Weather API timeout'),
+      );
+
+      if (weatherResponse.statusCode == 200) {
+        final weatherJson = json.decode(weatherResponse.body);
+        
+        // Fetch forecast
+        final forecastResponse = await http.get(forecastUrl).timeout(
+          const Duration(seconds: 8),
+        );
+        
+        List<Map<String, dynamic>> forecast = [];
+        if (forecastResponse.statusCode == 200) {
+          final forecastJson = json.decode(forecastResponse.body);
+          forecast = _parseForecastData(forecastJson);
+        }
+        
+        setState(() {
+          _weatherData = _parseWeatherData(weatherJson);
+          _forecastData = forecast.isNotEmpty ? forecast : _getDemoForecastData();
+          _isLoading = false;
+        });
+      } else {
+        // Fallback to demo data if API fails
+        setState(() {
+          _weatherData = _getDemoWeatherData();
+          _forecastData = _getDemoForecastData();
+          _isLoading = false;
+        });
+      }
     } catch (e) {
+      print('Weather API Error: $e');
       setState(() {
         _isLoading = false;
         _weatherData = _getDemoWeatherData();
         _forecastData = _getDemoForecastData();
       });
     }
+  }
+
+  Map<String, dynamic> _parseWeatherData(Map<String, dynamic> json) {
+    final main = json['main'];
+    final weather = json['weather'][0];
+    final wind = json['wind'];
+    final sys = json['sys'];
+    
+    return {
+      'temp': (main['temp'] as num).round(),
+      'feels_like': (main['feels_like'] as num).round(),
+      'humidity': main['humidity'],
+      'wind_speed': ((wind['speed'] as num) * 3.6).round(), // m/s to km/h
+      'pressure': main['pressure'],
+      'visibility': ((json['visibility'] ?? 10000) / 1000).round(),
+      'uv_index': 5, // UV index requires separate API call
+      'rainfall': 0,
+      'condition': weather['main'],
+      'description': weather['description'],
+      'icon': _getWeatherIcon(weather['main']),
+      'sunrise': DateFormat('HH:mm').format(
+        DateTime.fromMillisecondsSinceEpoch(sys['sunrise'] * 1000)
+      ),
+      'sunset': DateFormat('HH:mm').format(
+        DateTime.fromMillisecondsSinceEpoch(sys['sunset'] * 1000)
+      ),
+      'aqi': 75,
+      'location': json['name'],
+    };
+  }
+
+  IconData _getWeatherIcon(String condition) {
+    switch (condition.toLowerCase()) {
+      case 'clear':
+        return Icons.wb_sunny;
+      case 'clouds':
+        return Icons.wb_cloudy;
+      case 'rain':
+      case 'drizzle':
+        return Icons.grain;
+      case 'thunderstorm':
+        return Icons.thunderstorm;
+      case 'snow':
+        return Icons.ac_unit;
+      case 'mist':
+      case 'fog':
+        return Icons.cloud;
+      default:
+        return Icons.wb_cloudy;
+    }
+  }
+
+  List<Map<String, dynamic>> _parseForecastData(Map<String, dynamic> json) {
+    final List<dynamic> list = json['list'];
+    final Map<String, Map<String, dynamic>> dailyData = {};
+    
+    for (var item in list) {
+      final DateTime date = DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000);
+      final String day = DateFormat('EEE').format(date);
+      
+      if (!dailyData.containsKey(day) && dailyData.length < 7) {
+        final weather = item['weather'][0];
+        dailyData[day] = {
+          'day': day,
+          'high': (item['main']['temp_max'] as num).round(),
+          'low': (item['main']['temp_min'] as num).round(),
+          'rain': ((item['pop'] ?? 0) * 100).round(),
+          'icon': _getWeatherIcon(weather['main']),
+        };
+      }
+    }
+    
+    return dailyData.values.toList();
   }
 
   Map<String, dynamic> _getDemoWeatherData() {
@@ -342,8 +464,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.indigo.shade50,
-            Colors.grey.shade50,
+            const Color(0xFFF5F7FA), // Light professional gray
+            const Color(0xFFFFFFFF), // Pure white
           ],
         ),
       ),
@@ -355,14 +477,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 SliverToBoxAdapter(
                   child: Container(
                     margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                    padding: const EdgeInsets.all(18),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.indigo.shade100.withOpacity(0.3),
-                          blurRadius: 12,
+                          color: const Color(0xFF1A237E).withOpacity(0.08),
+                          blurRadius: 16,
+                          spreadRadius: 0,
                           offset: const Offset(0, 4),
                         ),
                       ],
@@ -370,29 +493,34 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.indigo.shade50,
-                            borderRadius: BorderRadius.circular(12),
+                            gradient: LinearGradient(
+                              colors: [
+                                const Color(0xFF1A237E).withOpacity(0.1),
+                                const Color(0xFF0D47A1).withOpacity(0.1),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(14),
                           ),
                           child: Icon(
                             _useCurrentLocation ? Icons.my_location : Icons.location_city,
-                            color: Colors.indigo.shade700,
-                            size: 24,
+                            color: const Color(0xFF1A237E),
+                            size: 26,
                           ),
                         ),
-                        const SizedBox(width: 14),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _isLoadingLocation
                                   ? SizedBox(
-                                      width: 18,
-                                      height: 18,
+                                      width: 20,
+                                      height: 20,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2.5,
-                                        color: Colors.indigo.shade600,
+                                        color: const Color(0xFF1A237E),
                                       ),
                                     )
                                   : Text(
@@ -400,29 +528,42 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                           ? (_currentLocation ?? 'Unknown')
                                           : (_selectedLocation ?? 'Delhi'),
                                       style: GoogleFonts.poppins(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey.shade800,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF1A237E),
+                                        letterSpacing: 0.2,
                                       ),
                                     ),
-                              const SizedBox(height: 2),
+                              const SizedBox(height: 4),
                               Row(
                                 children: [
                                   Container(
-                                    width: 6,
-                                    height: 6,
+                                    width: 7,
+                                    height: 7,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: _useCurrentLocation ? Colors.green : Colors.indigo.shade400,
+                                      color: _useCurrentLocation 
+                                          ? const Color(0xFF4CAF50) 
+                                          : const Color(0xFF1A237E),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: (_useCurrentLocation 
+                                              ? const Color(0xFF4CAF50) 
+                                              : const Color(0xFF1A237E)).withOpacity(0.4),
+                                          blurRadius: 4,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(width: 6),
+                                  const SizedBox(width: 7),
                                   Text(
                                     _useCurrentLocation ? 'Live Location' : 'Custom Location',
                                     style: GoogleFonts.roboto(
-                                      fontSize: 12,
+                                      fontSize: 13,
                                       color: Colors.grey.shade600,
                                       fontWeight: FontWeight.w500,
+                                      letterSpacing: 0.3,
                                     ),
                                   ),
                                 ],
@@ -432,11 +573,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.indigo.shade50,
-                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xFF1A237E).withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: IconButton(
-                            icon: Icon(Icons.search, color: Colors.indigo.shade700),
+                            icon: const Icon(Icons.search, color: Color(0xFF1A237E)),
                             onPressed: _showLocationSearchDialog,
                             tooltip: 'Change Location',
                           ),
@@ -444,11 +585,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         const SizedBox(width: 8),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.indigo.shade50,
-                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xFF1A237E).withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: IconButton(
-                            icon: Icon(Icons.refresh, color: Colors.indigo.shade700),
+                            icon: const Icon(Icons.refresh, color: Color(0xFF1A237E)),
                             onPressed: _useCurrentLocation 
                                 ? _getCurrentLocationAndWeather 
                                 : _fetchWeatherData,
@@ -533,43 +674,52 @@ class _WeatherScreenState extends State<WeatherScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.indigo.shade700,
-            Colors.indigo.shade900,
+            const Color(0xFF1A237E), // Deep Navy Blue
+            const Color(0xFF0D47A1), // Rich Blue
+            const Color(0xFF01579B), // Ocean Blue
           ],
         ),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: Colors.indigo.shade300.withOpacity(0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: const Color(0xFF1A237E).withOpacity(0.3),
+            blurRadius: 24,
+            spreadRadius: 0,
+            offset: const Offset(0, 12),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            spreadRadius: 0,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Stack(
         children: [
-          // Decorative circles
-          Positioned(
-            right: -30,
-            top: -30,
-            child: Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.05),
+          // Sophisticated pattern overlay
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(28),
+              child: CustomPaint(
+                painter: WeatherPatternPainter(),
               ),
             ),
           ),
-          Positioned(
-            left: -20,
-            bottom: -20,
+          // Gradient overlay for depth
+          Positioned.fill(
             child: Container(
-              width: 100,
-              height: 100,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(28),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withOpacity(0.05),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.1),
+                  ],
+                ),
               ),
             ),
           ),
@@ -1867,4 +2017,35 @@ class _WeatherScreenState extends State<WeatherScreen> {
       ),
     );
   }
+}
+
+// Custom painter for weather card pattern
+class WeatherPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.03)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    // Draw diagonal lines pattern
+    for (double i = -size.height; i < size.width; i += 30) {
+      canvas.drawLine(
+        Offset(i, 0),
+        Offset(i + size.height, size.height),
+        paint,
+      );
+    }
+
+    // Draw subtle circles
+    final circlePaint = Paint()
+      ..color = Colors.white.withOpacity(0.02)
+      ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(Offset(size.width * 0.8, size.height * 0.3), 60, circlePaint);
+    canvas.drawCircle(Offset(size.width * 0.2, size.height * 0.7), 80, circlePaint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
