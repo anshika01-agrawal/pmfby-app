@@ -43,18 +43,6 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
   }
   
   @override
-  void initState() {
-    super.initState();
-    // Load current theme state
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-      setState(() {
-        _darkMode = themeProvider.isDarkMode;
-      });
-    });
-  }
-  
-  @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
@@ -756,10 +744,88 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
   }
 
   void _exportData() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Data export started. You will receive an email when ready.'),
-        backgroundColor: Colors.blue.shade700,
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.download, color: Colors.blue.shade700),
+            SizedBox(width: 8),
+            Text('Export Data'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Select data to export:',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 16),
+            _buildExportOption('Claims Data', 'All processed claims (2024)', Icons.assignment),
+            _buildExportOption('Farmer Database', 'Complete farmer registry', Icons.people),
+            _buildExportOption('Analytics Reports', 'Monthly performance reports', Icons.analytics),
+            _buildExportOption('Profile Information', 'Officer profile and settings', Icons.person),
+            SizedBox(height: 16),
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue.shade200),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info, color: Colors.blue.shade700, size: 16),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Data will be exported in CSV format and sent to your registered email.',
+                      style: GoogleFonts.roboto(
+                        fontSize: 12,
+                        color: Colors.blue.shade700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Row(
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.white),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text('Export started! You will receive download links via email within 10-15 minutes.'),
+                      ),
+                    ],
+                  ),
+                  backgroundColor: Colors.green.shade700,
+                  duration: Duration(seconds: 4),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue.shade700,
+            ),
+            child: Text('Export Selected'),
+          ),
+        ],
       ),
     );
   }
@@ -767,15 +833,135 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
   void _showPrivacyPolicy() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Privacy Policy'),
-        content: Text('Privacy policy content will be displayed here.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Close'),
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.8,
+          padding: EdgeInsets.all(24),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.policy, color: Colors.indigo.shade700),
+                  SizedBox(width: 8),
+                  Text(
+                    'Privacy Policy',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.indigo.shade700,
+                    ),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.close),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildPolicySection(
+                        '1. Information We Collect',
+                        'We collect information you provide directly to us, such as:\n'
+                        '• Officer profile information (name, designation, contact details)\n'
+                        '• Claim processing data and decisions\n'
+                        '• Usage analytics and app performance data\n'
+                        '• Device information for security purposes',
+                      ),
+                      _buildPolicySection(
+                        '2. How We Use Your Information',
+                        'Your information is used to:\n'
+                        '• Process and manage crop insurance claims\n'
+                        '• Provide personalized dashboard experience\n'
+                        '• Generate reports and analytics\n'
+                        '• Ensure system security and prevent fraud\n'
+                        '• Communicate important updates and notifications',
+                      ),
+                      _buildPolicySection(
+                        '3. Data Security',
+                        'We implement industry-standard security measures:\n'
+                        '• End-to-end encryption for sensitive data\n'
+                        '• Secure authentication and session management\n'
+                        '• Regular security audits and monitoring\n'
+                        '• Role-based access controls\n'
+                        '• Data backup and disaster recovery protocols',
+                      ),
+                      _buildPolicySection(
+                        '4. Data Sharing',
+                        'We may share your information with:\n'
+                        '• Government agencies as required by law\n'
+                        '• Insurance company partners for claim processing\n'
+                        '• Technology service providers under strict agreements\n'
+                        '• We never sell personal data to third parties',
+                      ),
+                      _buildPolicySection(
+                        '5. Your Rights',
+                        'You have the right to:\n'
+                        '• Access and update your personal information\n'
+                        '• Request deletion of your data (subject to legal requirements)\n'
+                        '• Export your data in a portable format\n'
+                        '• Opt-out of non-essential communications\n'
+                        '• File complaints with data protection authorities',
+                      ),
+                      _buildPolicySection(
+                        '6. Contact Information',
+                        'For privacy concerns, contact us at:\n'
+                        'Email: privacy@pmfby.gov.in\n'
+                        'Phone: 1800-266-6999\n'
+                        'Address: Ministry of Agriculture & Farmers Welfare\n'
+                        'Government of India, New Delhi - 110001',
+                      ),
+                      SizedBox(height: 16),
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'Last Updated: December 2024\n'
+                          'Version: 2.1.0\n\n'
+                          'This privacy policy is compliant with Indian data protection laws and PMFBY guidelines.',
+                          style: GoogleFonts.roboto(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigo.shade700,
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    'I Understand',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -868,6 +1054,73 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExportOption(String title, String subtitle, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.indigo.shade600, size: 20),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.roboto(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch(
+            value: true,
+            onChanged: (value) {},
+            activeColor: Colors.indigo.shade700,
+            scale: 0.8,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPolicySection(String title, String content) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade800,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            content,
+            style: GoogleFonts.roboto(
+              fontSize: 14,
+              color: Colors.grey.shade700,
+              height: 1.5,
+            ),
           ),
         ],
       ),

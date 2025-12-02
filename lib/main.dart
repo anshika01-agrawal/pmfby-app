@@ -129,17 +129,6 @@ Future<void> _createDemoUsers(AuthService authService) async {
   await authService.register(officialUser);
 }
 
-class ThemeProvider with ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.light;
-
-  ThemeMode get themeMode => _themeMode;
-
-  void toggleTheme() {
-    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    notifyListeners();
-  }
-}
-
 GoRouter _buildRouter(BuildContext context) {
   return GoRouter(
     refreshListenable: context.read<AuthProvider>(),
