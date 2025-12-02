@@ -18,12 +18,10 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
   bool _notificationsEnabled = true;
   bool _emailNotifications = true;
   bool _smsNotifications = false;
-  bool _autoApproval = false;
   bool _darkMode = false;
   bool _biometricAuth = false;
   String _defaultView = 'dashboard';
   String _reportFrequency = 'weekly';
-  double _claimThreshold = 50000.0;
   bool _showTutorials = true;
   
   // Profile editing state
@@ -205,22 +203,6 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
                     'Workflow Settings',
                     Icons.work_outline,
                     [
-                      _buildSwitchTile(
-                        'Auto Approval',
-                        'Auto approve small claims',
-                        Icons.auto_awesome,
-                        _autoApproval,
-                        (value) => setState(() => _autoApproval = value),
-                      ),
-                      _buildSliderTile(
-                        'Claim Threshold',
-                        'Auto approval limit (₹)',
-                        Icons.currency_rupee,
-                        _claimThreshold,
-                        0,
-                        100000,
-                        (value) => setState(() => _claimThreshold = value),
-                      ),
                       _buildDropdownTile(
                         'Report Frequency',
                         'How often to generate reports',
@@ -275,12 +257,6 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
                         'Download your data',
                         Icons.download,
                         () => _exportData(),
-                      ),
-                      _buildListTile(
-                        'Clear Cache',
-                        'Free up storage space',
-                        Icons.clear_all,
-                        () => _clearCache(),
                       ),
                       _buildListTile(
                         'Privacy Policy',
@@ -765,12 +741,10 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
       _notificationsEnabled = true;
       _emailNotifications = true;
       _smsNotifications = false;
-      _autoApproval = false;
       _darkMode = false;
       _biometricAuth = false;
       _defaultView = 'dashboard';
       _reportFrequency = 'weekly';
-      _claimThreshold = 50000.0;
       _showTutorials = true;
     });
     ScaffoldMessenger.of(context).showSnackBar(
@@ -786,15 +760,6 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
       SnackBar(
         content: Text('Data export started. You will receive an email when ready.'),
         backgroundColor: Colors.blue.shade700,
-      ),
-    );
-  }
-
-  void _clearCache() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Cache cleared successfully!'),
-        backgroundColor: Colors.green.shade700,
       ),
     );
   }
