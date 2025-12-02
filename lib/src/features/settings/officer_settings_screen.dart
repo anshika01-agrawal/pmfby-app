@@ -309,7 +309,7 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
               ),
             ],
           ),
-          if (_isEditingProfile) ..[
+          if (_isEditingProfile) ...[
             const SizedBox(height: 20),
             Row(
               children: [
@@ -1088,11 +1088,13 @@ class _OfficerSettingsScreenState extends State<OfficerSettingsScreen> {
               ],
             ),
           ),
-          Switch(
-            value: true,
-            onChanged: (value) {},
-            activeColor: Colors.indigo.shade700,
+          Transform.scale(
             scale: 0.8,
+            child: Switch(
+              value: true,
+              onChanged: (value) {},
+              activeColor: Colors.indigo.shade700,
+            ),
           ),
         ],
       ),

@@ -71,7 +71,7 @@ class ThemeProvider with ChangeNotifier {
         elevation: 2,
         centerTitle: false,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: Colors.white,
         elevation: 2,
         shape: RoundedRectangleBorder(
@@ -119,7 +119,7 @@ class ThemeProvider with ChangeNotifier {
         elevation: 2,
         centerTitle: false,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: const Color(0xFF1E1E1E),
         elevation: 4,
         shape: RoundedRectangleBorder(
