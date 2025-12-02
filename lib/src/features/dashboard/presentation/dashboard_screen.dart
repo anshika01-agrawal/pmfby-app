@@ -258,7 +258,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     Text(
-                      'प्रधानमंत्री फसल बीमा योजना',
+                      AppStrings.get('pmfbyInfo', 'scheme_name', context.read<LanguageProvider>().currentLanguage),
                       style: GoogleFonts.notoSansDevanagari(
                         fontSize: 11,
                         color: Colors.white.withOpacity(0.95),
@@ -330,7 +330,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'नमस्ते',
+                                        AppStrings.get('greetings', 'welcome', context.read<LanguageProvider>().currentLanguage),
                                         style: GoogleFonts.notoSansDevanagari(
                                           fontSize: 16,
                                           color: Colors.white.withOpacity(0.9),
@@ -387,7 +387,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    'ऑफलाइन मोड',
+                                    AppStrings.get('dashboard', 'offline_mode', context.read<LanguageProvider>().currentLanguage),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w600,
@@ -397,8 +397,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   const SizedBox(height: 2),
                                   Text(
                                     _pendingUploadsCount > 0
-                                        ? '$_pendingUploadsCount फोटो सिंक के लिए बाकी'
-                                        : 'इंटरनेट से कनेक्ट होने पर डेटा सिंक होगा',
+                                        ? '$_pendingUploadsCount ${AppStrings.get('dashboard', 'photos_pending_sync', context.read<LanguageProvider>().currentLanguage)}'
+                                        : AppStrings.get('dashboard', 'data_will_sync', context.read<LanguageProvider>().currentLanguage),
                                     style: TextStyle(
                                       color: Colors.white.withOpacity(0.95),
                                       fontSize: 12,
@@ -429,8 +429,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     Expanded(
                       child: _buildStatCard(
-                        '5.0 एकड़',
-                        'कुल भूमि',
+                        '5.0',
+                        AppStrings.get('dashboard', 'total_land', context.read<LanguageProvider>().currentLanguage),
                         Icons.landscape,
                         Colors.green,
                       ),
@@ -439,7 +439,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Expanded(
                       child: _buildStatCard(
                         '3',
-                        'फसलें',
+                        AppStrings.get('dashboard', 'crops', context.read<LanguageProvider>().currentLanguage),
                         Icons.eco,
                         Colors.orange,
                       ),
@@ -448,7 +448,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Expanded(
                       child: _buildStatCard(
                         '2',
-                        'सक्रिय दावे',
+                        AppStrings.get('dashboard', 'active_claims', context.read<LanguageProvider>().currentLanguage),
                         Icons.pending_actions,
                         Colors.blue,
                       ),
@@ -503,7 +503,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'फसल की फोटो लें',
+                                    AppStrings.get('dashboard', 'capture_crop_image', context.read<LanguageProvider>().currentLanguage),
                                     style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 18,
@@ -511,7 +511,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'Capture Crop Image with GPS',
+                                    '${AppStrings.get('dashboard', 'capture_crop_image', 'en')} ${AppStrings.get('dashboard', 'capture_with_gps', 'en')}',
                                     style: GoogleFonts.roboto(
                                       color: Colors.white.withOpacity(0.9),
                                       fontSize: 12,
@@ -578,7 +578,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'योजना की जानकारी',
+                                AppStrings.get('dashboard', 'scheme_info', context.read<LanguageProvider>().currentLanguage),
                                 style: GoogleFonts.notoSansDevanagari(
                                   color: Colors.white,
                                   fontSize: 18,
@@ -587,7 +587,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'प्रीमियम दरें • हेल्पलाइन • सहायता',
+                                AppStrings.get('dashboard', 'premium_rates', context.read<LanguageProvider>().currentLanguage),
                                 style: GoogleFonts.notoSansDevanagari(
                                   color: Colors.white.withOpacity(0.9),
                                   fontSize: 13,
@@ -627,51 +627,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 delegate: SliverChildListDelegate([
                   _buildActionCard(
-                    'नया दावा दर्ज करें',
-                    'File New Claim',
+                    AppStrings.get('actions', 'file_claim', context.read<LanguageProvider>().currentLanguage),
+                    AppStrings.get('actions', 'file_claim', 'en'),
                     Icons.add_circle_outline,
                     Colors.blue,
                     () => context.push('/file-claim'),
                   ),
                   _buildActionCard(
-                    'मेरे दावे',
-                    'My Claims',
+                    AppStrings.get('dashboard', 'my_claims', context.read<LanguageProvider>().currentLanguage),
+                    AppStrings.get('dashboard', 'my_claims', 'en'),
                     Icons.history,
                     Colors.orange,
                     () => context.push('/claims'),
                   ),
                   _buildActionCard(
-                    'बीमा योजनाएं',
-                    'Insurance Schemes',
+                    AppStrings.get('dashboard', 'insurance_schemes', context.read<LanguageProvider>().currentLanguage),
+                    AppStrings.get('dashboard', 'insurance_schemes', 'en'),
                     Icons.policy,
                     Colors.purple,
                     () => setState(() => _selectedIndex = 2),
                   ),
                   _buildActionCardWithBadge(
-                    'अपलोड स्टेटस',
-                    'Upload Status',
+                    AppStrings.get('dashboard', 'upload_status', context.read<LanguageProvider>().currentLanguage),
+                    AppStrings.get('dashboard', 'upload_status', 'en'),
                     Icons.cloud_upload,
                     Colors.indigo,
                     () => context.push('/upload-status'),
                     _pendingUploadsCount,
                   ),
                   _buildActionCard(
-                    'फसल नुकसान सूचना',
-                    'Crop Loss Intimation',
+                    AppStrings.get('dashboard', 'crop_loss_intimation', context.read<LanguageProvider>().currentLanguage),
+                    AppStrings.get('dashboard', 'crop_loss_intimation', 'en'),
                     Icons.report_problem,
                     Colors.red.shade700,
                     () => context.push('/crop-loss-intimation'),
                   ),
                   _buildActionCard(
-                    'प्रीमियम कैलकुलेटर',
-                    'Premium Calculator',
+                    AppStrings.get('dashboard', 'premium_calculator', context.read<LanguageProvider>().currentLanguage),
+                    AppStrings.get('dashboard', 'premium_calculator', 'en'),
                     Icons.calculate_outlined,
                     Colors.green.shade600,
                     () => context.push('/premium-calculator'),
                   ),
                   _buildActionCard(
-                    'मदद केंद्र',
-                    'Help Center',
+                    AppStrings.get('dashboard', 'help_center', context.read<LanguageProvider>().currentLanguage),
+                    AppStrings.get('dashboard', 'help_center', 'en'),
                     Icons.help_outline,
                     Colors.teal,
                     () => _showHelpDialog(),
@@ -688,7 +688,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'हाल की गतिविधि (Recent Activity)',
+                      AppStrings.get('dashboard', 'recent_activity', context.read<LanguageProvider>().currentLanguage),
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -697,20 +697,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(height: 12),
                     _buildActivityTile(
-                      'फोटो अपलोड की गई',
-                      '2 घंटे पहले',
+                      AppStrings.get('dashboard', 'photo_uploaded', context.read<LanguageProvider>().currentLanguage),
+                      '2 ${AppStrings.get('dashboard', 'hours_ago', context.read<LanguageProvider>().currentLanguage)}',
                       Icons.check_circle,
                       Colors.green,
                     ),
                     _buildActivityTile(
-                      'AI विश्लेषण पूर्ण',
-                      '3 घंटे पहले',
+                      AppStrings.get('dashboard', 'ai_analysis_complete', context.read<LanguageProvider>().currentLanguage),
+                      '3 ${AppStrings.get('dashboard', 'hours_ago', context.read<LanguageProvider>().currentLanguage)}',
                       Icons.analytics,
                       Colors.blue,
                     ),
                     _buildActivityTile(
-                      'दावा स्वीकृत',
-                      '1 दिन पहले',
+                      AppStrings.get('dashboard', 'claim_approved', context.read<LanguageProvider>().currentLanguage),
+                      '1 ${AppStrings.get('dashboard', 'days_ago', context.read<LanguageProvider>().currentLanguage)}',
                       Icons.verified,
                       Colors.green,
                     ),
@@ -995,7 +995,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'ग्राहक सहायता',
+                AppStrings.get('dashboard', 'customer_support', context.read<LanguageProvider>().currentLanguage),
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -1199,7 +1199,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              'बंद करें',
+              AppStrings.get('dashboard', 'close', context.read<LanguageProvider>().currentLanguage),
               style: GoogleFonts.poppins(
                 color: Colors.grey.shade600,
                 fontWeight: FontWeight.w600,

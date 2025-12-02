@@ -276,7 +276,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Key Metrics',
+                      AppStrings.get('dashboard', 'key_metrics', context.read<LanguageProvider>().currentLanguage),
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -290,7 +290,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 1.3,
+                      childAspectRatio: 1.45,
                       children: [
                         _buildStatCard(
                           'Total Claims',
