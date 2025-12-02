@@ -257,25 +257,31 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
               ),
               // Satellite Data Overlay Layers
               if (_selectedDataLayer == 'soil_moisture')
-                TileLayer(
-                  urlTemplate: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/SMAP_L4_Analyzed_Root_Zone_Soil_Moisture/default/{time}/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png',
-                  additionalOptions: const {
-                    'time': '2024-12-01', // Dynamic date
-                  },
-                  userAgentPackageName: 'com.pmfby.app',
+                Opacity(
                   opacity: 0.7,
+                  child: TileLayer(
+                    urlTemplate: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/SMAP_L4_Analyzed_Root_Zone_Soil_Moisture/default/{time}/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png',
+                    additionalOptions: const {
+                      'time': '2024-12-01', // Dynamic date
+                    },
+                    userAgentPackageName: 'com.pmfby.app',
+                  ),
                 ),
               if (_selectedDataLayer == 'ndvi')
-                TileLayer(
-                  urlTemplate: 'https://services.sentinel-hub.com/ogc/wms/YOUR_INSTANCE_ID?REQUEST=GetMap&LAYERS=NDVI&WIDTH=256&HEIGHT=256&BBOX={bbox}&FORMAT=image/png',
-                  userAgentPackageName: 'com.pmfby.app',
+                Opacity(
                   opacity: 0.7,
+                  child: TileLayer(
+                    urlTemplate: 'https://services.sentinel-hub.com/ogc/wms/YOUR_INSTANCE_ID?REQUEST=GetMap&LAYERS=NDVI&WIDTH=256&HEIGHT=256&BBOX={bbox}&FORMAT=image/png',
+                    userAgentPackageName: 'com.pmfby.app',
+                  ),
                 ),
               if (_selectedDataLayer == 'soil_texture')
-                TileLayer(
-                  urlTemplate: 'https://bhuvan-vec1.nrsc.gov.in/bhuvan/gwc/service/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=india3&BBOX={bbox}&WIDTH=256&HEIGHT=256&FORMAT=image/png',
-                  userAgentPackageName: 'com.pmfby.app',
+                Opacity(
                   opacity: 0.6,
+                  child: TileLayer(
+                    urlTemplate: 'https://bhuvan-vec1.nrsc.gov.in/bhuvan/gwc/service/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=india3&BBOX={bbox}&WIDTH=256&HEIGHT=256&FORMAT=image/png',
+                    userAgentPackageName: 'com.pmfby.app',
+                  ),
                 ),
               // District markers
               if (_showDistricts)

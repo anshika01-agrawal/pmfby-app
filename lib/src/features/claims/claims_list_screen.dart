@@ -20,6 +20,38 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
     _tabController = TabController(length: 3, vsync: this);
   }
 
+  // Helper for Hindi text with proper Devanagari font
+  TextStyle hindiTextStyle({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+    double? height,
+    double? letterSpacing,
+  }) {
+    return GoogleFonts.notoSansDevanagari(
+      fontSize: fontSize ?? 14,
+      fontWeight: fontWeight ?? FontWeight.normal,
+      color: color ?? Colors.black87,
+      height: height,
+      letterSpacing: letterSpacing,
+    );
+  }
+
+  // Helper for English text
+  TextStyle englishTextStyle({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+    double? height,
+  }) {
+    return GoogleFonts.poppins(
+      fontSize: fontSize ?? 14,
+      fontWeight: fontWeight ?? FontWeight.normal,
+      color: color ?? Colors.black87,
+      height: height,
+    );
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -142,7 +174,12 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
       appBar: AppBar(
         title: Text(
           'मेरे दावे',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          style: hindiTextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            letterSpacing: 0.5,
+          ),
         ),
         backgroundColor: Colors.green.shade700,
         foregroundColor: Colors.white,
@@ -151,7 +188,12 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
           controller: _tabController,
           indicatorColor: Colors.white,
           indicatorWeight: 3,
-          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 13),
+          labelStyle: hindiTextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            color: Colors.white,
+            letterSpacing: 0.3,
+          ),
           tabs: const [
             Tab(text: 'सक्रिय'),
             Tab(text: 'स्वीकृत'),
@@ -180,7 +222,11 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
         icon: const Icon(Icons.add),
         label: Text(
           'नया दावा',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          style: hindiTextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            letterSpacing: 0.3,
+          ),
         ),
       ),
     );
@@ -206,17 +252,19 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
                   : status == 'approved'
                       ? 'कोई स्वीकृत दावा नहीं'
                       : 'कोई पिछला दावा नहीं',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
+              style: hindiTextStyle(
+                fontSize: 17,
                 color: Colors.grey.shade600,
+                letterSpacing: 0.3,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'नया दावा दर्ज करने के लिए + बटन दबाएं',
-              style: GoogleFonts.poppins(
-                fontSize: 13,
+              style: hindiTextStyle(
+                fontSize: 14,
                 color: Colors.grey.shade500,
+                letterSpacing: 0.2,
               ),
             ),
           ],
@@ -269,10 +317,11 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
         children: [
           Text(
             'दावा सारांश',
-            style: GoogleFonts.poppins(
-              fontSize: 18,
+            style: hindiTextStyle(
+              fontSize: 19,
               fontWeight: FontWeight.bold,
               color: Colors.white,
+              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 16),
@@ -318,9 +367,11 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
         ),
         Text(
           label,
-          style: GoogleFonts.poppins(
-            fontSize: 12,
+          style: hindiTextStyle(
+            fontSize: 13,
             color: Colors.white.withOpacity(0.9),
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
           ),
         ),
       ],
@@ -372,15 +423,16 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
                         children: [
                           Text(
                             claim.cropType,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
+                            style: hindiTextStyle(
+                              fontSize: 17,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
+                              letterSpacing: 0.3,
                             ),
                           ),
                           Text(
                             'दावा #${claim.id}',
-                            style: GoogleFonts.poppins(
+                            style: englishTextStyle(
                               fontSize: 12,
                               color: Colors.grey.shade600,
                             ),
@@ -400,9 +452,10 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
                     const SizedBox(width: 6),
                     Text(
                       'कारण: ${claim.damageReason}',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
+                      style: hindiTextStyle(
+                        fontSize: 14,
                         color: Colors.grey.shade700,
+                        letterSpacing: 0.2,
                       ),
                     ),
                   ],
@@ -414,9 +467,10 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
                     const SizedBox(width: 6),
                     Text(
                       'तिथि: ${DateFormat('dd MMM yyyy').format(claim.incidentDate)}',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
+                      style: hindiTextStyle(
+                        fontSize: 14,
                         color: Colors.grey.shade700,
+                        letterSpacing: 0.2,
                       ),
                     ),
                   ],
@@ -428,9 +482,10 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
                     const SizedBox(width: 6),
                     Text(
                       'नुकसान: ${claim.estimatedLossPercentage?.toStringAsFixed(0) ?? 'N/A'}%',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
+                      style: hindiTextStyle(
+                        fontSize: 14,
                         color: Colors.grey.shade700,
+                        letterSpacing: 0.2,
                       ),
                     ),
                     const Spacer(),
@@ -460,9 +515,10 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
                         Expanded(
                           child: Text(
                             claim.reviewerComments!,
-                            style: GoogleFonts.poppins(
-                              fontSize: 11,
+                            style: hindiTextStyle(
+                              fontSize: 12,
                               color: Colors.red.shade900,
+                              letterSpacing: 0.2,
                             ),
                           ),
                         ),
@@ -487,10 +543,11 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
       ),
       child: Text(
         _getStatusText(status),
-        style: GoogleFonts.poppins(
-          fontSize: 11,
+        style: hindiTextStyle(
+          fontSize: 12,
           fontWeight: FontWeight.w600,
           color: Colors.white,
+          letterSpacing: 0.3,
         ),
       ),
     );
@@ -597,14 +654,15 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
                       children: [
                         Text(
                           claim.cropType,
-                          style: GoogleFonts.poppins(
-                            fontSize: 20,
+                          style: hindiTextStyle(
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
                           ),
                         ),
                         Text(
                           'दावा #${claim.id}',
-                          style: GoogleFonts.poppins(
+                          style: englishTextStyle(
                             fontSize: 13,
                             color: Colors.grey.shade600,
                           ),
@@ -629,9 +687,10 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
               if (claim.description.isNotEmpty) ...[
                 Text(
                   'विवरण',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
+                  style: hindiTextStyle(
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
+                    letterSpacing: 0.3,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -643,10 +702,11 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
                   ),
                   child: Text(
                     claim.description,
-                    style: GoogleFonts.poppins(
+                    style: hindiTextStyle(
                       fontSize: 14,
                       color: Colors.grey.shade700,
-                      height: 1.5,
+                      height: 1.6,
+                      letterSpacing: 0.2,
                     ),
                   ),
                 ),
@@ -655,9 +715,10 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
               if (claim.reviewerComments != null) ...[
                 Text(
                   'समीक्षक टिप्पणियाँ',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
+                  style: hindiTextStyle(
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
+                    letterSpacing: 0.3,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -676,10 +737,11 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
                   ),
                   child: Text(
                     claim.reviewerComments!,
-                    style: GoogleFonts.poppins(
+                    style: hindiTextStyle(
                       fontSize: 14,
                       color: Colors.black87,
-                      height: 1.5,
+                      height: 1.6,
+                      letterSpacing: 0.2,
                     ),
                   ),
                 ),
@@ -688,7 +750,14 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
               FilledButton.icon(
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(Icons.close),
-                label: const Text('बंद करें'),
+                label: Text(
+                  'बंद करें',
+                  style: hindiTextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    letterSpacing: 0.3,
+                  ),
+                ),
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.green.shade700,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -721,17 +790,19 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
               children: [
                 Text(
                   label,
-                  style: GoogleFonts.poppins(
+                  style: hindiTextStyle(
                     fontSize: 12,
                     color: Colors.grey.shade600,
+                    letterSpacing: 0.2,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: GoogleFonts.poppins(
+                  style: hindiTextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
+                    letterSpacing: 0.2,
                     color: Colors.black87,
                   ),
                 ),
