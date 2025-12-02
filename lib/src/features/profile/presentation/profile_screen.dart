@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../auth/presentation/providers/auth_provider.dart';
 import '../../settings/language_settings_screen.dart';
 import '../../../providers/language_provider.dart';
+import '../../../localization/app_localizations.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,13 +19,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
+    return Consumer2<AuthProvider, LanguageProvider>(
+      builder: (context, authProvider, languageProvider, child) {
         final user = authProvider.currentUser;
+        final lang = languageProvider.currentLanguage;
         
         if (user == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Profile')),
+            appBar: AppBar(title: Text(AppStrings.get('profile', 'profile', lang))),
             body: const Center(child: Text('No user data available')),
           );
         }
@@ -98,7 +100,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            user.role == 'farmer' ? '👨‍🌾 Farmer' : '👔 Official',
+                            user.role == 'farmer' 
+                              ? '👨‍🌾 ${AppStrings.get('profile', 'farmer', lang)}' 
+                              : '👔 ${AppStrings.get('profile', 'official', lang)}',
                             style: GoogleFonts.poppins(
                               fontSize: 14,
                               color: Colors.white,
@@ -121,11 +125,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       // Contact Information Card
                       _buildInfoCard(
-                        title: 'Contact Information',
+                        title: AppStrings.get('profile', 'contact_information', lang),
                         icon: Icons.contact_phone,
                         children: [
-                          _buildInfoRow(Icons.phone, 'Phone', user.phone),
-                          _buildInfoRow(Icons.email, 'Email', user.email),
+                          _buildInfoRow(Icons.phone, AppStrings.get('profile', 'phone', lang), user.phone),
+                          _buildInfoRow(Icons.email, AppStrings.get('profile', 'email', lang), user.email),
                         ],
                       ),
 
@@ -134,22 +138,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Location/Department Card
                       if (user.role == 'farmer') ...[
                         _buildInfoCard(
-                          title: 'Location Details',
+                          title: AppStrings.get('profile', 'location_details', lang),
                           icon: Icons.location_on,
                           children: [
-                            _buildInfoRow(Icons.home, 'Village', user.village ?? 'Not specified'),
-                            _buildInfoRow(Icons.location_city, 'District', user.district ?? 'Not specified'),
-                            _buildInfoRow(Icons.map, 'State', user.state ?? 'Not specified'),
+                            _buildInfoRow(Icons.home, AppStrings.get('profile', 'village', lang), user.village ?? 'Not specified'),
+                            _buildInfoRow(Icons.location_city, AppStrings.get('profile', 'district', lang), user.district ?? 'Not specified'),
+                            _buildInfoRow(Icons.map, AppStrings.get('profile', 'state', lang), user.state ?? 'Not specified'),
                           ],
                         ),
                         const SizedBox(height: 16),
                         _buildInfoCard(
-                          title: 'Farm Information',
+                          title: AppStrings.get('profile', 'farm_information', lang),
                           icon: Icons.agriculture,
                           children: [
                             _buildInfoRow(
                               Icons.landscape,
-                              'Farm Size',
+                              AppStrings.get('profile', 'farm_size', lang),
                               user.farmSize != null ? '${user.farmSize} acres' : 'Not specified',
                             ),
                             _buildInfoRow(
@@ -163,9 +167,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               _buildChipRow(Icons.eco, 'Crops', user.cropTypes!),
                           ],
                         ),
-                      ] else ...[
+                      ] else ..[
                         _buildInfoCard(
-                          title: 'Official Details',
+                          title: AppStrings.get('profile', 'official_details', lang),
                           icon: Icons.work,
                           children: [
                             _buildInfoRow(Icons.badge, 'Official ID', user.officialId ?? 'Not assigned'),
@@ -186,12 +190,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       // Settings Options
                       _buildInfoCard(
-                        title: 'Settings & Support',
+                        title: AppStrings.get('profile', 'settings_support', lang),
                         icon: Icons.settings,
                         children: [
                           _buildActionTile(
                             icon: Icons.edit,
-                            title: 'Edit Profile',
+                            title: AppStrings.get('profile', 'edit_profile', lang),
                             subtitle: 'Update your information',
                             onTap: () {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -201,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           _buildActionTile(
                             icon: Icons.lock,
-                            title: 'Change Password',
+                            title: AppStrings.get('profile', 'change_password', lang),
                             subtitle: 'Update your security settings',
                             onTap: () {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -211,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           _buildActionTile(
                             icon: Icons.notifications,
-                            title: 'Notifications',
+                            title: AppStrings.get('profile', 'notifications', lang),
                             subtitle: 'Manage notification preferences',
                             onTap: () {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -221,7 +225,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           _buildActionTile(
                             icon: Icons.language,
-                            title: 'Change Language',
+                            title: AppStrings.get('actions', 'change_language', lang),
                             subtitle: 'Select your preferred language',
                             onTap: () {
                               Navigator.of(context).push(
@@ -233,20 +237,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           _buildActionTile(
                             icon: Icons.help_outline,
-                            title: 'Help & Support',
+                            title: AppStrings.get('profile', 'help_support', lang),
                             subtitle: 'Get help and contact support',
                             onTap: () {
-                              _showHelpDialog();
+                              _showHelpDialog(lang);
                             },
                           ),
                           const Divider(height: 32),
                           _buildActionTile(
                             icon: Icons.logout,
-                            title: 'Logout',
+                            title: AppStrings.get('profile', 'logout', lang),
                             subtitle: 'Sign out from your account',
                             isDestructive: true,
                             onTap: () {
-                              _showLogoutDialog();
+                              _showLogoutDialog(lang);
                             },
                           ),
                         ],
@@ -440,12 +444,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Your Statistics',
-            style: GoogleFonts.poppins(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          Consumer<LanguageProvider>(
+            builder: (context, langProvider, child) => Text(
+              AppStrings.get('profile', 'your_statistics', langProvider.currentLanguage),
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -549,12 +555,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showHelpDialog() {
+  void _showHelpDialog(String lang) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
-          'Help & Support',
+          AppStrings.get('profile', 'help_support', lang),
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
         ),
         content: Column(
@@ -584,37 +590,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(AppStrings.get('dashboard', 'close', lang)),
           ),
         ],
       ),
     );
   }
 
-  void _showLogoutDialog() {
+  void _showLogoutDialog(String lang) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
-          'Logout',
+          AppStrings.get('profile', 'logout', lang),
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
         ),
-        content: const Text('Are you sure you want to logout from your account?'),
+        content: Text(AppStrings.get('profile', 'are_you_sure_logout', lang)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(AppStrings.get('profile', 'cancel', lang)),
           ),
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
               await context.read<AuthProvider>().logout();
               if (context.mounted) {
-                context.goNamed('login');
+                context.go('/login');
               }
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Logout'),
+            child: Text(AppStrings.get('profile', 'logout', lang)),
           ),
         ],
       ),
