@@ -7,6 +7,7 @@ import '../../models/user_profile.dart';
 import 'package:intl/intl.dart';
 import '../satellite/enhanced_satellite_screen.dart';
 import '../settings/language_settings_screen.dart';
+import '../settings/officer_settings_screen.dart';
 import '../../providers/language_provider.dart';
 import '../../localization/app_localizations.dart';
 
@@ -472,7 +473,13 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                             'Settings',
                             Icons.settings,
                             Colors.teal,
-                            () {},
+                            () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const OfficerSettingsScreen(),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ],
