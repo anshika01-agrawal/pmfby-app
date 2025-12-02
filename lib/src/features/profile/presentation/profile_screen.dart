@@ -16,6 +16,38 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final bool _isEditing = false;
 
+  // Helper for Hindi text
+  TextStyle hindiTextStyle({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+    double? height,
+    double? letterSpacing,
+  }) {
+    return GoogleFonts.notoSansDevanagari(
+      fontSize: fontSize ?? 14,
+      fontWeight: fontWeight ?? FontWeight.normal,
+      color: color ?? Colors.black87,
+      height: height,
+      letterSpacing: letterSpacing,
+    );
+  }
+
+  // Helper for English text
+  TextStyle englishTextStyle({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+    double? height,
+  }) {
+    return GoogleFonts.poppins(
+      fontSize: fontSize ?? 14,
+      fontWeight: fontWeight ?? FontWeight.normal,
+      color: color ?? Colors.black87,
+      height: height,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
@@ -98,11 +130,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            user.role == 'farmer' ? '👨‍🌾 Farmer' : '👔 Official',
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
+                            user.role == 'farmer' ? '👨‍🌾 किसान | Farmer' : '👔 अधिकारी | Official',
+                            style: hindiTextStyle(
+                              fontSize: 15,
                               color: Colors.white,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.3,
                             ),
                           ),
                         ),
@@ -121,7 +154,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       // Contact Information Card
                       _buildInfoCard(
-                        title: 'Contact Information',
+                        title: 'संपर्क जानकारी',
+                        subtitle: 'Contact Information',
                         icon: Icons.contact_phone,
                         children: [
                           _buildInfoRow(Icons.phone, 'Phone', user.phone),
@@ -134,7 +168,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Location/Department Card
                       if (user.role == 'farmer') ...[
                         _buildInfoCard(
-                          title: 'Location Details',
+                          title: 'स्थान विवरण',
+                          subtitle: 'Location Details',
                           icon: Icons.location_on,
                           children: [
                             _buildInfoRow(Icons.home, 'Village', user.village ?? 'Not specified'),
@@ -144,7 +179,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 16),
                         _buildInfoCard(
-                          title: 'Farm Information',
+                          title: 'खेत की जानकारी',
+                          subtitle: 'Farm Information',
                           icon: Icons.agriculture,
                           children: [
                             _buildInfoRow(
@@ -165,7 +201,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ] else ...[
                         _buildInfoCard(
-                          title: 'Official Details',
+                          title: 'अधिकारी विवरण',
+                          subtitle: 'Official Details',
                           icon: Icons.work,
                           children: [
                             _buildInfoRow(Icons.badge, 'Official ID', user.officialId ?? 'Not assigned'),
@@ -186,13 +223,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       // Settings Options
                       _buildInfoCard(
-                        title: 'Settings & Support',
+                        title: 'सेटिंग्स और सहायता',
+                        subtitle: 'Settings & Support',
                         icon: Icons.settings,
                         children: [
                           _buildActionTile(
                             icon: Icons.edit,
-                            title: 'Edit Profile',
-                            subtitle: 'Update your information',
+                            title: 'प्रोफ़ाइल संपादित करें',
+                            subtitle: 'Edit Profile',
+                            englishSubtitle: 'Update your information',
                             onTap: () {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Edit feature coming soon!')),
@@ -201,8 +240,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           _buildActionTile(
                             icon: Icons.lock,
-                            title: 'Change Password',
-                            subtitle: 'Update your security settings',
+                            title: 'पासवर्ड बदलें',
+                            subtitle: 'Change Password',
+                            englishSubtitle: 'Update your security settings',
                             onTap: () {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Password change coming soon!')),
@@ -211,8 +251,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           _buildActionTile(
                             icon: Icons.notifications,
-                            title: 'Notifications',
-                            subtitle: 'Manage notification preferences',
+                            title: 'सूचनाएं',
+                            subtitle: 'Notifications',
+                            englishSubtitle: 'Manage notification preferences',
                             onTap: () {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Notification settings coming soon!')),
@@ -221,8 +262,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           _buildActionTile(
                             icon: Icons.language,
-                            title: 'Change Language',
-                            subtitle: 'Select your preferred language',
+                            title: 'भाषा बदलें',
+                            subtitle: 'Change Language',
+                            englishSubtitle: 'Select your preferred language',
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
@@ -233,8 +275,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           _buildActionTile(
                             icon: Icons.help_outline,
-                            title: 'Help & Support',
-                            subtitle: 'Get help and contact support',
+                            title: 'सहायता और समर्थन',
+                            subtitle: 'Help & Support',
+                            englishSubtitle: 'Get help and contact support',
                             onTap: () {
                               _showHelpDialog();
                             },
@@ -242,8 +285,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const Divider(height: 32),
                           _buildActionTile(
                             icon: Icons.logout,
-                            title: 'Logout',
-                            subtitle: 'Sign out from your account',
+                            title: 'लॉगआउट',
+                            subtitle: 'Logout',
+                            englishSubtitle: 'Sign out from your account',
                             isDestructive: true,
                             onTap: () {
                               _showLogoutDialog();
@@ -288,6 +332,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildInfoCard({
     required String title,
+    String? subtitle,
     required IconData icon,
     required List<Widget> children,
   }) {
@@ -310,14 +355,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                Icon(icon, color: Colors.green.shade700, size: 24),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: Colors.green.shade700, size: 24),
+                ),
                 const SizedBox(width: 12),
-                Text(
-                  title,
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: hindiTextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          style: englishTextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ],
@@ -493,48 +563,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required IconData icon,
     required String title,
     required String subtitle,
+    String? englishSubtitle,
     required VoidCallback onTap,
     bool isDestructive = false,
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 4),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: isDestructive ? Colors.red.shade50 : Colors.green.shade50,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 icon,
-                size: 20,
+                size: 22,
                 color: isDestructive ? Colors.red : Colors.green.shade700,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
+                    style: hindiTextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                       color: isDestructive ? Colors.red : Colors.black87,
+                      letterSpacing: 0.3,
                     ),
                   ),
+                  const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: GoogleFonts.poppins(
+                    style: englishTextStyle(
                       fontSize: 12,
                       color: Colors.grey.shade600,
                     ),
                   ),
+                  if (englishSubtitle != null) ...[
+                    Text(
+                      englishSubtitle,
+                      style: englishTextStyle(
+                        fontSize: 11,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
