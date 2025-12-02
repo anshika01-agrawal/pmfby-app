@@ -637,7 +637,7 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> with SingleTickerPr
                       ],
                     ),
                   ),
-                  _buildStatusChip(claim.status),
+                  _buildStatusChip(claim.status, context.read<LanguageProvider>().currentLanguage),
                 ],
               ),
               const SizedBox(height: 24),
