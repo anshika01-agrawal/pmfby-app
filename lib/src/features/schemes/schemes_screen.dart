@@ -115,7 +115,6 @@ Widget build(BuildContext context) {
         const SizedBox(height: 24),
         
         Text(
-          'अन्य योजनाएं',
           AppStrings.get('schemes', 'other_schemes', lang),
           style: GoogleFonts.poppins(
             fontSize: 18,

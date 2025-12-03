@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../../providers/language_provider.dart';
+import '../../localization/app_localizations.dart';
 import '../weather/weather_screen.dart';
 
 class EnhancedSatelliteScreen extends StatefulWidget {
@@ -202,40 +205,45 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA),
-      appBar: AppBar(
-        title: Text(
-          'Satellite & Weather',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        final lang = languageProvider.currentLanguage;
+        return Scaffold(
+          backgroundColor: const Color(0xFFFAFAFA),
+          appBar: AppBar(
+            title: Text(
+              AppStrings.get('satellite', 'satellite_weather', lang),
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            bottom: TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  icon: const Icon(Icons.satellite_alt),
+                  text: AppStrings.get('satellite', 'satellite_tab', lang),
+                ),
+                Tab(
+                  icon: const Icon(Icons.cloud),
+                  text: AppStrings.get('satellite', 'weather_tab', lang),
+                ),
+              ],
+            ),
           ),
-        ),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(
-              icon: Icon(Icons.satellite_alt),
-              text: 'Satellite',
-            ),
-            Tab(
-              icon: Icon(Icons.cloud),
-              text: 'Weather',
-            ),
-          ],
-        ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildSatelliteView(),
-          const WeatherScreen(),
-        ],
-      ),
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildSatelliteView(lang),
+              const WeatherScreen(),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildSatelliteView() {
+  Widget _buildSatelliteView(String lang) {
     return Stack(
         children: [
           // Map
@@ -341,7 +349,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
                     );
                   }).toList(),
                 ),
-              // Weather alert markers
+              // Weather alert markers  
               if (_showWeather)
                 MarkerLayer(
                   markers: weatherAlerts.map((alert) {
@@ -379,333 +387,329 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
                 ),
             ],
           ),
-
           // Top Controls
           Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            left: 16,
-            right: 16,
-            child: Column(
-              children: [
-                // Header
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF1B5E20), Color(0xFF2E7D32)],
+                top: MediaQuery.of(context).padding.top + 16,
+                left: 16,
+                right: 16,
+                child: Column(
+                  children: [
+                    // Header
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF1B5E20), Color(0xFF2E7D32)],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.satellite_alt,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppStrings.get('satellite', 'bhuvan_satellite', lang),
+                                  style: GoogleFonts.notoSansDevanagari(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  AppStrings.get('satellite', 'isro_realtime', lang),
+                                  style: GoogleFonts.notoSans(
+                                    color: Colors.white.withOpacity(0.9),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              _showFilterBottomSheet(context, lang);
+                            },
+                            icon: const Icon(
+                              Icons.tune,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    const SizedBox(height: 12),
+                    // Quick Stats
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildStatCard(
+                            AppStrings.get('satellite', 'total_farmers', lang),
+                            '${districts.fold(0, (sum, d) => sum + (d['totalFarmers'] as int))}',
+                            Icons.people,
+                            const Color(0xFF1565C0),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _buildStatCard(
+                            AppStrings.get('satellite', 'active_alerts', lang),
+                            '${weatherAlerts.length}',
+                            Icons.warning,
+                            const Color(0xFFC62828),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+          // Satellite Data Layer Selector (Left side) - Enhanced
+          Positioned(
+                left: 16,
+                bottom: _selectedFeature != null ? 320 : 100,
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: 280),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                        offset: const Offset(0, 8),
+                      ),
+                      BoxShadow(
+                        color: const Color(0xFF1B5E20).withOpacity(0.1),
+                        blurRadius: 30,
+                        spreadRadius: 5,
+                        offset: const Offset(0, 12),
                       ),
                     ],
                   ),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Header with gradient
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(8),
+                          gradient: LinearGradient(
+                            colors: [Color(0xFF1B5E20), Color(0xFF2E7D32), Color(0xFF43A047)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                         ),
-                        child: const Icon(
-                          Icons.satellite_alt,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            Text(
-                              'भुवन सैटेलाइट निगरानी',
-                              style: GoogleFonts.notoSansDevanagari(
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.satellite_alt,
                                 color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                size: 20,
                               ),
                             ),
-                            Text(
-                              'ISRO • रीयल-टाइम डेटा',
-                              style: GoogleFonts.notoSans(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 12,
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppStrings.get('satellite', 'satellite_data', lang),
+                                    style: GoogleFonts.notoSansDevanagari(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                  Text(
+                                    AppStrings.get('satellite', 'realtime_analysis', lang),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 10,
+                                      color: Colors.white.withOpacity(0.9),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          _showFilterBottomSheet(context);
-                        },
-                        icon: const Icon(
-                          Icons.tune,
-                          color: Colors.white,
+                      // Buttons container
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _buildDataLayerButton('soil_moisture'),
+                            const SizedBox(height: 10),
+                            _buildDataLayerButton('ndvi'),
+                            const SizedBox(height: 10),
+                            _buildDataLayerButton('soil_texture'),
+                            if (_selectedDataLayer != 'none') ...[
+                              const SizedBox(height: 12),
+                              const Divider(height: 1),
+                              const SizedBox(height: 8),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedDataLayer = 'none';
+                                  });
+                                },
+                                icon: const Icon(Icons.layers_clear, size: 18),
+                                label: Text(
+                                  AppStrings.get('satellite', 'remove_all_layers', lang),
+                                  style: GoogleFonts.notoSansDevanagari(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red.shade50,
+                                  foregroundColor: Colors.red.shade700,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(color: Colors.red.shade200),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                // Quick Stats
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildStatCard(
-                        'कुल किसान',
-                        '${districts.fold(0, (sum, d) => sum + (d['totalFarmers'] as int))}',
-                        Icons.people,
-                        const Color(0xFF1565C0),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _buildStatCard(
-                        'सक्रिय अलर्ट',
-                        '${weatherAlerts.length}',
-                        Icons.warning,
-                        const Color(0xFFC62828),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
+              ),
           // Bottom Sheet for selected feature
           if (_selectedFeature != null)
             Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 16,
-                      offset: Offset(0, -4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Handle
-                    Container(
-                      margin: const EdgeInsets.only(top: 12, bottom: 8),
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    // Content
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: _selectedFeature!.containsKey('totalFarmers')
-                          ? _buildDistrictDetails(_selectedFeature!)
-                          : _buildAlertDetails(_selectedFeature!),
-                    ),
-                    // Close button
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              _selectedFeature = null;
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1B5E20),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text('बंद करें'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-          // Satellite Data Layer Selector (Left side) - Enhanced
-          Positioned(
-            left: 16,
-            bottom: _selectedFeature != null ? 320 : 100,
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 280),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                    offset: const Offset(0, 8),
-                  ),
-                  BoxShadow(
-                    color: const Color(0xFF1B5E20).withOpacity(0.1),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: const Offset(0, 12),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Header with gradient
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Color(0xFF1B5E20), Color(0xFF2E7D32), Color(0xFF43A047)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(
-                            Icons.satellite_alt,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '🛰️ सैटेलाइट डेटा',
-                                style: GoogleFonts.notoSansDevanagari(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              Text(
-                                'Real-time Analysis',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 10,
-                                  color: Colors.white.withOpacity(0.9),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 16,
+                          offset: Offset(0, -4),
                         ),
                       ],
                     ),
-                  ),
-                  // Buttons container
-                  Container(
-                    padding: const EdgeInsets.all(12),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        _buildDataLayerButton('soil_moisture'),
-                        const SizedBox(height: 10),
-                        _buildDataLayerButton('ndvi'),
-                        const SizedBox(height: 10),
-                        _buildDataLayerButton('soil_texture'),
-                        if (_selectedDataLayer != 'none') ...[
-                          const SizedBox(height: 12),
-                          const Divider(height: 1),
-                          const SizedBox(height: 8),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                _selectedDataLayer = 'none';
-                              });
-                            },
-                            icon: const Icon(Icons.layers_clear, size: 18),
-                            label: Text(
-                              'सभी लेयर हटाएं',
-                              style: GoogleFonts.notoSansDevanagari(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
+                        // Handle
+                        Container(
+                          margin: const EdgeInsets.only(top: 12, bottom: 8),
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        // Content
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: _selectedFeature!.containsKey('totalFarmers')
+                              ? _buildDistrictDetails(_selectedFeature!, lang)
+                              : _buildAlertDetails(_selectedFeature!, lang),
+                        ),
+                        // Close button
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  _selectedFeature = null;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF1B5E20),
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                               ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red.shade50,
-                              foregroundColor: Colors.red.shade700,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: BorderSide(color: Colors.red.shade200),
-                              ),
+                              child: Text(AppStrings.get('satellite', 'close', lang)),
                             ),
                           ),
-                        ],
+                        ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-
+                ),
           // Zoom controls
           Positioned(
-            right: 16,
-            bottom: _selectedFeature != null ? 320 : 100,
-            child: Column(
-              children: [
-                FloatingActionButton.small(
-                  heroTag: 'zoom_in',
-                  onPressed: () {
-                    _mapController.move(
-                      _mapController.camera.center,
-                      _mapController.camera.zoom + 1,
-                    );
-                  },
-                  backgroundColor: Colors.white,
-                  child: const Icon(Icons.add, color: Color(0xFF1B5E20)),
+                right: 16,
+                bottom: _selectedFeature != null ? 320 : 100,
+                child: Column(
+                  children: [
+                    FloatingActionButton.small(
+                      heroTag: 'zoom_in',
+                      onPressed: () {
+                        _mapController.move(
+                          _mapController.camera.center,
+                          _mapController.camera.zoom + 1,
+                        );
+                      },
+                      backgroundColor: Colors.white,
+                      child: const Icon(Icons.add, color: Color(0xFF1B5E20)),
+                    ),
+                    const SizedBox(height: 8),
+                    FloatingActionButton.small(
+                      heroTag: 'zoom_out',
+                      onPressed: () {
+                        _mapController.move(
+                          _mapController.camera.center,
+                          _mapController.camera.zoom - 1,
+                        );
+                      },
+                      backgroundColor: Colors.white,
+                      child: const Icon(Icons.remove, color: Color(0xFF1B5E20)),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 8),
-                FloatingActionButton.small(
-                  heroTag: 'zoom_out',
-                  onPressed: () {
-                    _mapController.move(
-                      _mapController.camera.center,
-                      _mapController.camera.zoom - 1,
-                    );
-                  },
-                  backgroundColor: Colors.white,
-                  child: const Icon(Icons.remove, color: Color(0xFF1B5E20)),
-                ),
-              ],
-            ),
-          ),
+              ),
         ],
     );
   }
@@ -762,7 +766,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
     );
   }
 
-  Widget _buildDistrictDetails(Map<String, dynamic> district) {
+  Widget _buildDistrictDetails(Map<String, dynamic> district, String lang) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -794,7 +798,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
                     ),
                   ),
                   Text(
-                    'मुख्य फसल: ${district['mainCrop']}',
+                    '${AppStrings.get('satellite', 'main_crop', lang)}: ${district['mainCrop']}',
                     style: GoogleFonts.notoSansDevanagari(
                       fontSize: 13,
                       color: const Color(0xFF616161),
@@ -806,12 +810,12 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
           ],
         ),
         const SizedBox(height: 16),
-        _buildDetailRow('कुल किसान', '${district['totalFarmers']}', Icons.people),
-        _buildDetailRow('बीमित क्षेत्र', district['insuredArea'], Icons.landscape),
-        _buildDetailRow('फसल स्वास्थ्य', district['cropHealth'], Icons.eco),
-        _buildDetailRow('NDVI सूचकांक', district['avgNDVI'].toStringAsFixed(2), Icons.analytics),
-        _buildDetailRow('वर्षा', district['rainfall'], Icons.water_drop),
-        _buildDetailRow('तापमान', district['temp'], Icons.thermostat),
+        _buildDetailRow(AppStrings.get('satellite', 'total_farmers', lang), '${district['totalFarmers']}', Icons.people),
+        _buildDetailRow(AppStrings.get('satellite', 'insured_area', lang), district['insuredArea'], Icons.landscape),
+        _buildDetailRow(AppStrings.get('satellite', 'crop_health', lang), district['cropHealth'], Icons.eco),
+        _buildDetailRow(AppStrings.get('satellite', 'ndvi_index', lang), district['avgNDVI'].toStringAsFixed(2), Icons.analytics),
+        _buildDetailRow(AppStrings.get('satellite', 'rainfall', lang), district['rainfall'], Icons.water_drop),
+        _buildDetailRow(AppStrings.get('satellite', 'temperature', lang), district['temp'], Icons.thermostat),
         if (district['alerts'] > 0)
           Container(
             margin: const EdgeInsets.only(top: 12),
@@ -826,7 +830,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
                 const Icon(Icons.warning, color: Color(0xFFF57C00), size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  '${district['alerts']} सक्रिय चेतावनी',
+                  AppStrings.get('satellite', 'active_warning', lang).replaceAll('{count}', '${district['alerts']}'),
                   style: GoogleFonts.notoSansDevanagari(
                     color: const Color(0xFFF57C00),
                     fontWeight: FontWeight.w600,
@@ -839,7 +843,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
     );
   }
 
-  Widget _buildAlertDetails(Map<String, dynamic> alert) {
+  Widget _buildAlertDetails(Map<String, dynamic> alert, String lang) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -918,7 +922,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
             const Icon(Icons.calendar_today, size: 16, color: Color(0xFF616161)),
             const SizedBox(width: 6),
             Text(
-              'तिथि: ${alert['date']}',
+              '${AppStrings.get('satellite', 'date_label', lang)}: ${alert['date']}',
               style: GoogleFonts.notoSansDevanagari(
                 fontSize: 13,
                 color: const Color(0xFF616161),
@@ -1432,7 +1436,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
     );
   }
 
-  void _showFilterBottomSheet(BuildContext context) {
+  void _showFilterBottomSheet(BuildContext context, String lang) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -1448,7 +1452,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'मानचित्र फ़िल्टर',
+                  AppStrings.get('satellite', 'map_filters', lang),
                   style: GoogleFonts.notoSansDevanagari(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -1456,7 +1460,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
                 ),
                 const SizedBox(height: 20),
                 SwitchListTile(
-                  title: Text('जिले दिखाएं', style: GoogleFonts.notoSansDevanagari()),
+                  title: Text(AppStrings.get('satellite', 'show_districts', lang), style: GoogleFonts.notoSansDevanagari()),
                   value: _showDistricts,
                   activeColor: const Color(0xFF1B5E20),
                   onChanged: (value) {
@@ -1465,7 +1469,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
                   },
                 ),
                 SwitchListTile(
-                  title: Text('मौसम चेतावनी', style: GoogleFonts.notoSansDevanagari()),
+                  title: Text(AppStrings.get('satellite', 'weather_alerts', lang), style: GoogleFonts.notoSansDevanagari()),
                   value: _showWeather,
                   activeColor: const Color(0xFF1B5E20),
                   onChanged: (value) {
@@ -1474,7 +1478,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
                   },
                 ),
                 SwitchListTile(
-                  title: Text('NDVI विश्लेषण', style: GoogleFonts.notoSansDevanagari()),
+                  title: Text(AppStrings.get('satellite', 'ndvi_analysis', lang), style: GoogleFonts.notoSansDevanagari()),
                   value: _showNDVI,
                   activeColor: const Color(0xFF1B5E20),
                   onChanged: (value) {
@@ -1484,7 +1488,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'मानचित्र परत',
+                  AppStrings.get('satellite', 'map_layer', lang),
                   style: GoogleFonts.notoSansDevanagari(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -1500,7 +1504,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
                           setState(() => _selectedLayer = 'satellite');
                         },
                         icon: const Icon(Icons.satellite),
-                        label: Text('सैटेलाइट', style: GoogleFonts.notoSansDevanagari()),
+                        label: Text(AppStrings.get('satellite', 'satellite_layer', lang), style: GoogleFonts.notoSansDevanagari()),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _selectedLayer == 'satellite'
                               ? const Color(0xFF1B5E20)
@@ -1519,7 +1523,7 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with 
                           setState(() => _selectedLayer = 'terrain');
                         },
                         icon: const Icon(Icons.terrain),
-                        label: Text('सड़क', style: GoogleFonts.notoSansDevanagari()),
+                        label: Text(AppStrings.get('satellite', 'terrain_layer', lang), style: GoogleFonts.notoSansDevanagari()),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _selectedLayer == 'terrain'
                               ? const Color(0xFF1B5E20)
