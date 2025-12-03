@@ -1826,6 +1826,50 @@ class AppStrings {
       'ml': 'പിന്നീട് പരിശോധിക്കുക',
       'bn': 'পরে আবার দেখুন',
     },
+    'fill_details_correctly': {
+      'en': 'Please fill all details correctly',
+      'hi': 'कृपया सभी जानकारी सही-सही भरें',
+    },
+    'crop_name': {
+      'en': 'Crop Name *',
+      'hi': 'फसल का नाम *',
+    },
+    'crop_name_hint': {
+      'en': 'e.g., Rice, Wheat, Sugarcane',
+      'hi': 'जैसे: धान, गेहूं, गन्ना',
+    },
+    'enter_crop_name': {
+      'en': 'Please enter crop name',
+      'hi': 'कृपया फसल का नाम दर्ज करें',
+    },
+    'estimated_loss_hint': {
+      'en': 'e.g., 50 (50% loss)',
+      'hi': 'जैसे: 50 (50% नुकसान)',
+    },
+    'enter_valid_percentage': {
+      'en': 'Please enter a number between 0-100',
+      'hi': 'कृपया 0-100 के बीच संख्या दर्ज करें',
+    },
+    'description_hint': {
+      'en': 'Provide detailed description of damage...',
+      'hi': 'नुकसान का विस्तृत विवरण दें...',
+    },
+    'enter_description': {
+      'en': 'Please enter description',
+      'hi': 'कृपया विवरण दर्ज करें',
+    },
+    'min_characters': {
+      'en': 'Please enter at least 20 characters',
+      'hi': 'कृपया कम से कम 20 अक्षर दर्ज करें',
+    },
+    'add_photo_evidence': {
+      'en': 'Add Photo Evidence',
+      'hi': 'फोटो सबूत जोड़ें',
+    },
+    'response_time_info': {
+      'en': '⚠️ After submitting, you will receive response in 7-15 days',
+      'hi': '⚠️ दावा जमा करने के बाद, आपको 7-15 दिनों में प्रतिक्रिया मिलेगी',
+    },
   };
 
   // Premium Calculator
@@ -2220,6 +2264,1202 @@ class AppStrings {
     },
   };
 
+  // Camera
+  static const Map<String, Map<String, String>> camera = {
+    'capture_crop_photo': {
+      'en': 'Capture Crop Photo',
+      'hi': 'फसल की फोटो लें',
+    },
+    'location': {
+      'en': 'Location',
+      'hi': 'स्थान',
+    },
+    'getting_location': {
+      'en': 'Getting location...',
+      'hi': 'स्थान प्राप्त कर रहे हैं...',
+    },
+    'location_required': {
+      'en': 'Location permission required',
+      'hi': 'स्थान अनुमति आवश्यक है',
+    },
+    'enable_location': {
+      'en': 'Please enable location in settings',
+      'hi': 'कृपया सेटिंग्स में स्थान अनुमति दें',
+    },
+    'take_photo': {
+      'en': 'Take Photo',
+      'hi': 'फोटो लें',
+    },
+    'from_gallery': {
+      'en': 'Choose from Gallery',
+      'hi': 'गैलरी से चुनें',
+    },
+    'upload': {
+      'en': 'Upload',
+      'hi': 'अपलोड करें',
+    },
+    'uploading': {
+      'en': 'Uploading...',
+      'hi': 'अपलोड हो रहा है...',
+    },
+    'remove': {
+      'en': 'Remove',
+      'hi': 'हटाएं',
+    },
+    'select_crop_type': {
+      'en': 'Select Crop Type',
+      'hi': 'फसल का प्रकार चुनें',
+    },
+    'photo_saved': {
+      'en': 'Photo saved!',
+      'hi': 'फोटो सेव हुई!',
+    },
+    'will_sync_online': {
+      'en': 'Will sync when online',
+      'hi': 'ऑनलाइन होने पर सिंक होगी',
+    },
+    'image_saved_syncing': {
+      'en': 'Image saved and syncing!',
+      'hi': 'फोटो सेव हुई और सिंक हो रही है!',
+    },
+    'important_instructions': {
+      'en': 'Important Instructions',
+      'hi': 'महत्वपूर्ण निर्देश',
+    },
+    'ai_analysis_info': {
+      'en': 'AI will automatically analyze your crop\nDamage will be detected\nGPS location will be auto-saved\nPhoto will be stored securely',
+      'hi': 'AI आपकी फसल का स्वचालित विश्लेषण करेगा\nनुकसान का पता लगाया जाएगा\nGPS स्थान स्वतः सहेजा जाएगा\nफोटो सुरक्षित रूप से संग्रहीत की जाएगी',
+    },
+    'capture_instructions': {
+      'en': 'Show crop clearly\nInclude entire plant\nTake photo in good light',
+      'hi': 'फसल को स्पष्ट रूप से दिखाएं\nपूरे पौधे को शामिल करें\nअच्छी रोशनी में फोटो लें',
+    },
+    'capture_crop_image': {
+      'en': 'Capture Crop Image',
+      'hi': 'फसल की तस्वीर लें',
+    },
+    'no_cameras_found': {
+      'en': 'No cameras found on this device',
+      'hi': 'इस डिवाइस पर कोई कैमरा नहीं मिला',
+    },
+    'error_initializing_camera': {
+      'en': 'Error initializing camera',
+      'hi': 'कैमरा प्रारंभ करने में त्रुटि',
+    },
+    'error_capturing_image': {
+      'en': 'Error capturing image',
+      'hi': 'तस्वीर लेने में त्रुटि',
+    },
+    'initializing_camera': {
+      'en': 'Initializing Camera...',
+      'hi': 'कैमरा प्रारंभ हो रहा है...',
+    },
+    'go_back': {
+      'en': 'Go Back',
+      'hi': 'वापस जाएं',
+    },
+    'preview': {
+      'en': 'Preview',
+      'hi': 'पूर्वावलोकन',
+    },
+    'retake': {
+      'en': 'Retake',
+      'hi': 'दोबारा लें',
+    },
+    'use_photo': {
+      'en': 'Use Photo',
+      'hi': 'फोटो का उपयोग करें',
+    },
+    'image_saved_successfully': {
+      'en': 'Image saved successfully!',
+      'hi': 'तस्वीर सफलतापूर्वक सहेजी गई!',
+    },
+    'ar_crop_detection': {
+      'en': 'AR Crop Detection Mode',
+      'hi': 'AR फसल पहचान मोड',
+    },
+    'capture_farm_images': {
+      'en': 'Capture Farm Images',
+      'hi': 'खेत की तस्वीरें लें',
+    },
+    'capture_multiple_angles': {
+      'en': 'Capture Multiple Angles',
+      'hi': 'कई कोणों से तस्वीरें लें',
+    },
+    'multi_image_instructions': {
+      'en': '• Take 4-5 clear photos from different angles\n• Include field boundaries and damage areas\n• Photos will be compressed automatically',
+      'hi': '• विभिन्न कोणों से 4-5 स्पष्ट फोटो लें\n• खेत की सीमाएं और क्षतिग्रस्त क्षेत्र शामिल करें\n• फोटो स्वचालित रूप से संपीड़ित होंगी',
+    },
+    'maximum_images_allowed': {
+      'en': 'Maximum {count} images allowed',
+      'hi': 'अधिकतम {count} तस्वीरें अनुमत हैं',
+    },
+    'no_images_captured': {
+      'en': 'No Images Captured Yet',
+      'hi': 'अभी तक कोई तस्वीर नहीं ली गई',
+    },
+    'tap_take_photo_start': {
+      'en': 'Tap "Take Photo" to start',
+      'hi': 'शुरू करने के लिए "फोटो लें" पर टैप करें',
+    },
+    'clear_all': {
+      'en': 'Clear All',
+      'hi': 'सभी हटाएं',
+    },
+    'done': {
+      'en': 'Done',
+      'hi': 'हो गया',
+    },
+    'from_gallery': {
+      'en': 'From Gallery',
+      'hi': 'गैलरी से',
+    },
+    'compressing_images': {
+      'en': 'Compressing images...',
+      'hi': 'तस्वीरें संपीड़ित हो रही हैं...',
+    },
+    'clear_all_images': {
+      'en': 'Clear All Images?',
+      'hi': 'सभी तस्वीरें हटाएं?',
+    },
+    'clear_all_confirm': {
+      'en': 'This will remove all captured images. Are you sure?',
+      'hi': 'यह सभी ली गई तस्वीरें हटा देगा। क्या आप सुनिश्चित हैं?',
+    },
+    'cancel': {
+      'en': 'Cancel',
+      'hi': 'रद्द करें',
+    },
+    'maximum_images_reached': {
+      'en': 'Maximum Images Reached',
+      'hi': 'अधिकतम तस्वीरें पहुंच गईं',
+    },
+    'max_images_message': {
+      'en': 'You can only add up to {count} images per report.',
+      'hi': 'आप प्रति रिपोर्ट केवल {count} तस्वीरें जोड़ सकते हैं।',
+    },
+    'confirm_images': {
+      'en': 'Confirm Images',
+      'hi': 'तस्वीरों की पुष्टि करें',
+    },
+    'captured_images_count': {
+      'en': 'You have captured {count} image(s).',
+      'hi': 'आपने {count} तस्वीर(ें) ली हैं।',
+    },
+    'compress_info': {
+      'en': 'Images will be compressed automatically to reduce upload time and server load.',
+      'hi': 'अपलोड समय और सर्वर लोड कम करने के लिए तस्वीरें स्वचालित रूप से संपीड़ित होंगी।',
+    },
+    'recommended_images': {
+      'en': 'Recommended: 4-5 images from different angles',
+      'hi': 'अनुशंसित: विभिन्न कोणों से 4-5 तस्वीरें',
+    },
+    'add_more': {
+      'en': 'Add More',
+      'hi': 'और जोड़ें',
+    },
+    'confirm': {
+      'en': 'Confirm',
+      'hi': 'पुष्टि करें',
+    },
+    'images_ready_upload': {
+      'en': '{count} images ready for upload',
+      'hi': '{count} तस्वीरें अपलोड के लिए तैयार',
+    },
+    'error_processing_images': {
+      'en': 'Error processing images',
+      'hi': 'तस्वीरें प्रोसेस करने में त्रुटि',
+    },
+    'capture_one_image': {
+      'en': 'Please capture at least one image',
+      'hi': 'कृपया कम से कम एक तस्वीर लें',
+    },
+    'gallery_coming_soon': {
+      'en': 'Gallery picker coming soon',
+      'hi': 'गैलरी पिकर जल्द आ रहा है',
+    },
+    'resolution': {
+      'en': 'Resolution',
+      'hi': 'रिज़ॉल्यूशन',
+    },
+    'zoom': {
+      'en': 'Zoom',
+      'hi': 'ज़ूम',
+    },
+  };
+
+  // Crop Loss
+  static const Map<String, Map<String, String>> cropLoss = {
+    'crop_loss_intimation': {
+      'en': 'Crop Loss Intimation',
+      'hi': 'फसल नुकसान सूचना',
+    },
+    'new_report': {
+      'en': 'New Report',
+      'hi': 'नई रिपोर्ट',
+    },
+    'my_reports': {
+      'en': 'My Reports',
+      'hi': 'मेरी रिपोर्ट',
+    },
+    'how_to_file': {
+      'en': 'How to File Report',
+      'hi': 'रिपोर्ट कैसे दर्ज करें',
+    },
+    'take_photos': {
+      'en': 'Take Photos',
+      'hi': 'फोटो लें',
+    },
+    'call_support': {
+      'en': 'Call Support',
+      'hi': 'सहायता कॉल करें',
+    },
+    'file_new_report': {
+      'en': 'File New Report',
+      'hi': 'नई रिपोर्ट दर्ज करें',
+    },
+    'report_within_72hrs': {
+      'en': 'Important: Report within 72 hours of incident',
+      'hi': 'महत्वपूर्ण: घटना के 72 घंटे के भीतर रिपोर्ट करें',
+    },
+    'step1': {
+      'en': 'Take clear photos of damaged crop',
+      'hi': 'क्षतिग्रस्त फसल की स्पष्ट फोटो लें',
+    },
+    'step2': {
+      'en': 'Fill in all required details',
+      'hi': 'सभी आवश्यक विवरण भरें',
+    },
+    'step3': {
+      'en': 'Submit within 72 hours of incident',
+      'hi': 'घटना के 72 घंटे के भीतर जमा करें',
+    },
+    'step4': {
+      'en': 'Track status in "My Reports"',
+      'hi': '"मेरी रिपोर्ट" में स्थिति ट्रैक करें',
+    },
+    'under_review': {
+      'en': 'Under Review',
+      'hi': 'समीक्षाधीन',
+    },
+    'pending_documents': {
+      'en': 'Pending Documents',
+      'hi': 'दस्तावेज़ लंबित',
+    },
+    'affected_area': {
+      'en': 'Affected Area',
+      'hi': 'प्रभावित क्षेत्र',
+    },
+    'loss_type': {
+      'en': 'Loss Type',
+      'hi': 'नुकसान का प्रकार',
+    },
+    'loss_percentage': {
+      'en': 'Loss Percentage',
+      'hi': 'नुकसान प्रतिशत',
+    },
+    'total_reports': {
+      'en': 'Total Reports',
+      'hi': 'कुल रिपोर्ट',
+    },
+    'pending': {
+      'en': 'Pending',
+      'hi': 'लंबित',
+    },
+    'approved': {
+      'en': 'Approved',
+      'hi': 'स्वीकृत',
+    },
+    'pending_reports': {
+      'en': 'Pending Reports',
+      'hi': 'लंबित रिपोर्ट',
+    },
+    'completed_reports': {
+      'en': 'Completed Reports',
+      'hi': 'पूर्ण रिपोर्ट',
+    },
+    'no_reports_filed': {
+      'en': 'No reports filed yet',
+      'hi': 'अभी तक कोई रिपोर्ट नहीं दर्ज',
+    },
+    'common_loss_types': {
+      'en': 'Common Loss Types',
+      'hi': 'सामान्य नुकसान प्रकार',
+    },
+    'emergency_support': {
+      'en': 'Emergency Support',
+      'hi': 'आपातकालीन सहायता',
+    },
+    'emergency_call_message': {
+      'en': 'For urgent crop loss, call 14447 immediately',
+      'hi': 'तत्काल फसल नुकसान के लिए, तुरंत 14447 पर कॉल करें',
+    },
+    'report_details': {
+      'en': 'Report Details',
+      'hi': 'रिपोर्ट विवरण',
+    },
+    'description': {
+      'en': 'Description',
+      'hi': 'विवरण',
+    },
+    'assessor_comments': {
+      'en': 'Assessor Comments',
+      'hi': 'मूल्यांकनकर्ता टिप्पणियाँ',
+    },
+    'for_support': {
+      'en': 'For crop loss intimation support:',
+      'hi': 'फसल नुकसान सूचना सहायता के लिए:',
+    },
+    'toll_free_helpline': {
+      'en': 'Toll-Free Helpline',
+      'hi': 'टोल-फ्री हेल्पलाइन',
+    },
+    'chat_support': {
+      'en': 'Chat Support',
+      'hi': 'चैट सहायता',
+    },
+    'file_report_title': {
+      'en': 'File Crop Loss Report',
+      'hi': 'फसल नुकसान रिपोर्ट दर्ज करें',
+    },
+    'fill_all_required': {
+      'en': 'Fill all required details',
+      'hi': 'सभी आवश्यक विवरण भरें',
+    },
+    'crop_damage_photos': {
+      'en': 'Crop Damage Photos',
+      'hi': 'फसल क्षति फोटो',
+    },
+    'crop_details': {
+      'en': 'Crop Details',
+      'hi': 'फसल विवरण',
+    },
+    'loss_details': {
+      'en': 'Loss Details',
+      'hi': 'नुकसान विवरण',
+    },
+    'location_details': {
+      'en': 'Location Details',
+      'hi': 'स्थान विवरण',
+    },
+    'season': {
+      'en': 'Season',
+      'hi': 'मौसम',
+    },
+    'crop_type': {
+      'en': 'Crop Type',
+      'hi': 'फसल प्रकार',
+    },
+    'affected_area_hectares': {
+      'en': 'Affected Area (hectares)',
+      'hi': 'प्रभावित क्षेत्र (हेक्टेयर)',
+    },
+    'estimated_loss': {
+      'en': 'Estimated Loss Percentage',
+      'hi': 'अनुमानित नुकसान प्रतिशत',
+    },
+    'incident_date': {
+      'en': 'Incident Date',
+      'hi': 'घटना की तारीख',
+    },
+    'state': {
+      'en': 'State',
+      'hi': 'राज्य',
+    },
+    'district': {
+      'en': 'District',
+      'hi': 'जिला',
+    },
+    'village': {
+      'en': 'Village',
+      'hi': 'गाँव',
+    },
+    'gps_location': {
+      'en': 'GPS Location',
+      'hi': 'GPS स्थान',
+    },
+    'fetching_location': {
+      'en': 'Fetching location...',
+      'hi': 'स्थान प्राप्त हो रहा है...',
+    },
+    'describe_damage': {
+      'en': 'Describe the crop damage in detail...',
+      'hi': 'फसल की क्षति का विस्तार से वर्णन करें...',
+    },
+    'submit_report': {
+      'en': 'Submit Report',
+      'hi': 'रिपोर्ट जमा करें',
+    },
+    'need_help': {
+      'en': 'Need Help?',
+      'hi': 'मदद चाहिए?',
+    },
+    'no_photos_added': {
+      'en': 'No photos added yet',
+      'hi': 'अभी तक कोई फोटो नहीं जोड़ी गई',
+    },
+    'add_photos_instruction': {
+      'en': 'Add 4-5 clear photos from different angles',
+      'hi': 'विभिन्न कोणों से 4-5 स्पष्ट फोटो जोड़ें',
+    },
+    'auto_compress_info': {
+      'en': 'Photos will be compressed automatically to save upload time',
+      'hi': 'अपलोड समय बचाने के लिए फोटो स्वचालित रूप से संपीड़ित होंगी',
+    },
+    'images_ready': {
+      'en': 'image(s) ready',
+      'hi': 'तस्वीर(रें) तैयार',
+    },
+    'capture_multiple': {
+      'en': 'Capture Multiple Photos',
+      'hi': 'कई फोटो लें',
+    },
+    'update_photos': {
+      'en': 'Update Photos',
+      'hi': 'फोटो अपडेट करें',
+    },
+    'select_incident_date': {
+      'en': 'Select incident date',
+      'hi': 'घटना की तारीख चुनें',
+    },
+    'report_submitted': {
+      'en': 'Report Submitted!',
+      'hi': 'रिपोर्ट जमा हो गई!',
+    },
+    'report_success_message': {
+      'en': 'Your crop loss report has been successfully submitted. You will receive a confirmation SMS shortly.',
+      'hi': 'आपकी फसल नुकसान रिपोर्ट सफलतापूर्वक जमा हो गई है। आपको जल्द ही एक पुष्टि SMS प्राप्त होगा।',
+    },
+    'view_my_reports': {
+      'en': 'View My Reports',
+      'hi': 'मेरी रिपोर्ट देखें',
+    },
+    'contact_support': {
+      'en': 'Contact customer support for assistance:',
+      'hi': 'सहायता के लिए ग्राहक सहायता से संपर्क करें:',
+    },
+  };
+
+  // Multi Image
+  static const Map<String, Map<String, String>> multiImage = {
+    'capture_farm_images': {
+      'en': 'Capture Farm Images',
+      'hi': 'खेत की तस्वीरें लें',
+    },
+    'capture_multiple_angles': {
+      'en': 'Capture Multiple Angles',
+      'hi': 'कई कोणों से फोटो लें',
+    },
+    'multi_angle_instructions': {
+      'en': 'Take 4-5 clear photos from different angles\nInclude field boundaries and damage areas\nPhotos will be compressed automatically',
+      'hi': 'विभिन्न कोणों से 4-5 स्पष्ट फोटो लें\nखेत की सीमाएं और क्षतिग्रस्त क्षेत्र शामिल करें\nफोटो स्वचालित रूप से संपीड़ित होंगी',
+    },
+    'max_images_allowed': {
+      'en': 'Maximum images allowed',
+      'hi': 'अधिकतम तस्वीरें अनुमत',
+    },
+    'clear_all': {
+      'en': 'Clear All',
+      'hi': 'सभी हटाएं',
+    },
+    'done': {
+      'en': 'Done',
+      'hi': 'पूर्ण',
+    },
+    'no_images_captured': {
+      'en': 'No Images Captured Yet',
+      'hi': 'अभी तक कोई तस्वीर नहीं ली गई',
+    },
+    'tap_to_start': {
+      'en': 'Tap "Take Photo" to start',
+      'hi': 'शुरू करने के लिए "फोटो लें" पर टैप करें',
+    },
+    'clear_all_confirm': {
+      'en': 'Clear All Images?',
+      'hi': 'सभी तस्वीरें हटाएं?',
+    },
+    'clear_all_warning': {
+      'en': 'This will remove all captured images. Are you sure?',
+      'hi': 'इससे सभी ली गई तस्वीरें हट जाएंगी। क्या आप सुनिश्चित हैं?',
+    },
+    'compressing_images': {
+      'en': 'Compressing images...',
+      'hi': 'तस्वीरें संपीड़ित हो रही हैं...',
+    },
+  };
+
+  // Satellite
+  static const Map<String, Map<String, String>> satellite = {
+    'satellite_monitoring': {
+      'en': 'Satellite Monitoring',
+      'hi': 'उपग्रह निगरानी',
+    },
+    'bhuvan_satellite': {
+      'en': 'Bhuvan Satellite Monitoring',
+      'hi': 'भुवन सैटेलाइट निगरानी',
+    },
+    'isro_realtime': {
+      'en': 'ISRO • Real-time Data',
+      'hi': 'ISRO • रीयल-टाइम डेटा',
+    },
+    'total_farmers': {
+      'en': 'Total Farmers',
+      'hi': 'कुल किसान',
+    },
+    'active_alerts': {
+      'en': 'Active Alerts',
+      'hi': 'सक्रिय अलर्ट',
+    },
+    'crop_health': {
+      'en': 'Crop Health',
+      'hi': 'फसल स्वास्थ्य',
+    },
+    'excellent': {
+      'en': 'Excellent',
+      'hi': 'उत्तम',
+    },
+    'good': {
+      'en': 'Good',
+      'hi': 'अच्छा',
+    },
+    'moderate': {
+      'en': 'Moderate',
+      'hi': 'मध्यम',
+    },
+    'insured_area': {
+      'en': 'Insured Area',
+      'hi': 'बीमित क्षेत्र',
+    },
+    'main_crop': {
+      'en': 'Main Crop',
+      'hi': 'मुख्य फसल',
+    },
+    'avg_ndvi': {
+      'en': 'Avg NDVI',
+      'hi': 'औसत NDVI',
+    },
+    'weather': {
+      'en': 'Weather',
+      'hi': 'मौसम',
+    },
+    'pest_attack_warning': {
+      'en': 'Pest Attack Warning',
+      'hi': 'कीट प्रकोप चेतावनी',
+    },
+    'drought_warning': {
+      'en': 'Drought Warning',
+      'hi': 'सूखा चेतावनी',
+    },
+    'high_severity': {
+      'en': 'High',
+      'hi': 'उच्च',
+    },
+    'medium_severity': {
+      'en': 'Medium',
+      'hi': 'मध्यम',
+    },
+    'close': {
+      'en': 'Close',
+      'hi': 'बंद करें',
+    },
+    'map_filters': {
+      'en': 'Map Filters',
+      'hi': 'मानचित्र फ़िल्टर',
+    },
+    'show_districts': {
+      'en': 'Show Districts',
+      'hi': 'जिले दिखाएं',
+    },
+    'weather_alerts': {
+      'en': 'Weather Alerts',
+      'hi': 'मौसम चेतावनी',
+    },
+    'ndvi_analysis': {
+      'en': 'NDVI Analysis',
+      'hi': 'NDVI विश्लेषण',
+    },
+    'map_layer': {
+      'en': 'Map Layer',
+      'hi': 'मानचित्र परत',
+    },
+    'satellite_layer': {
+      'en': 'Satellite',
+      'hi': 'सैटेलाइट',
+    },
+    'terrain_layer': {
+      'en': 'Terrain',
+      'hi': 'सड़क',
+    },
+    'ndvi_index': {
+      'en': 'NDVI Index',
+      'hi': 'NDVI सूचकांक',
+    },
+    'rainfall': {
+      'en': 'Rainfall',
+      'hi': 'वर्षा',
+    },
+    'temperature': {
+      'en': 'Temperature',
+      'hi': 'तापमान',
+    },
+    'active_warning': {
+      'en': '{count} active warning(s)',
+      'hi': '{count} सक्रिय चेतावनी',
+    },
+    'date_label': {
+      'en': 'Date',
+      'hi': 'तिथि',
+    },
+  };
+
+  // Uploads
+  static const Map<String, Map<String, String>> uploads = {
+    'upload_status': {
+      'en': 'Upload Status',
+      'hi': 'अपलोड स्थिति',
+    },
+    'storage_summary': {
+      'en': 'Storage Summary',
+      'hi': 'स्टोरेज सारांश',
+    },
+    'pending': {
+      'en': 'Pending',
+      'hi': 'लंबित',
+    },
+    'synced': {
+      'en': 'Synced',
+      'hi': 'समन्वयित',
+    },
+    'failed': {
+      'en': 'Failed',
+      'hi': 'विफल',
+    },
+    'total_size': {
+      'en': 'Total Size',
+      'hi': 'कुल आकार',
+    },
+    'last_sync': {
+      'en': 'Last Sync',
+      'hi': 'अंतिम समन्वयन',
+    },
+    'retry': {
+      'en': 'Retry',
+      'hi': 'पुनः प्रयास',
+    },
+    'no_uploads': {
+      'en': 'No Uploads in Queue',
+      'hi': 'कतार में कोई अपलोड नहीं',
+    },
+    'capture_to_start': {
+      'en': 'Capture images to start uploading',
+      'hi': 'अपलोड शुरू करने के लिए तस्वीरें लें',
+    },
+    'overall_progress': {
+      'en': 'Overall Progress',
+      'hi': 'समग्र प्रगति',
+    },
+    'images': {
+      'en': 'images',
+      'hi': 'तस्वीरें',
+    },
+    'uploading': {
+      'en': 'Uploading',
+      'hi': 'अपलोड हो रहा',
+    },
+    'completed': {
+      'en': 'Completed',
+      'hi': 'पूर्ण',
+    },
+    'start_upload': {
+      'en': 'Start Upload',
+      'hi': 'अपलोड शुरू करें',
+    },
+    'cancel': {
+      'en': 'Cancel',
+      'hi': 'रद्द करें',
+    },
+    'clear': {
+      'en': 'Clear',
+      'hi': 'साफ़ करें',
+    },
+    'retry_failed': {
+      'en': 'Retry Failed',
+      'hi': 'विफल पुनः प्रयास',
+    },
+    'batch_photo_upload': {
+      'en': 'Batch Photo Upload',
+      'hi': 'बैच फोटो अपलोड',
+    },
+    'offline': {
+      'en': 'Offline',
+      'hi': 'ऑफलाइन',
+    },
+    'total': {
+      'en': 'Total',
+      'hi': 'कुल',
+    },
+    'complete': {
+      'en': 'Complete',
+      'hi': 'पूर्ण',
+    },
+    'no_photos': {
+      'en': 'No Photos',
+      'hi': 'कोई फोटो नहीं',
+    },
+    'press_button_add': {
+      'en': 'Press button below to add photos',
+      'hi': 'फोटो जोड़ने के लिए नीचे बटन दबाएं',
+    },
+    'upload_all': {
+      'en': 'Upload All',
+      'hi': 'सभी अपलोड करें',
+    },
+    'photos_saved_offline': {
+      'en': '{count} photos saved offline. Will upload when online.',
+      'hi': '{count} फोटो ऑफलाइन सहेजी गई। ऑनलाइन होने पर अपलोड होगी।',
+    },
+    'photo_pick_error': {
+      'en': 'Error picking photo',
+      'hi': 'फोटो चुनने में त्रुटि',
+    },
+    'photo_saved_offline': {
+      'en': 'Photo saved offline. GPS: {status}',
+      'hi': 'फोटो ऑफलाइन सहेजी गई। GPS: {status}',
+    },
+    'camera_error': {
+      'en': 'Camera error',
+      'hi': 'कैमरा एरर',
+    },
+    'photo_uploaded': {
+      'en': 'Photo uploaded',
+      'hi': 'फोटो अपलोड हो गई',
+    },
+    'upload_failed': {
+      'en': 'Upload failed',
+      'hi': 'अपलोड विफल',
+    },
+    'uploaded_status': {
+      'en': 'Uploaded ✓',
+      'hi': 'अपलोड हो गई ✓',
+    },
+    'uploading_status': {
+      'en': 'Uploading...',
+      'hi': 'अपलोड हो रही है...',
+    },
+    'pending_status': {
+      'en': 'Pending',
+      'hi': 'लंबित',
+    },
+    'offline_saved': {
+      'en': 'Saved Offline',
+      'hi': 'ऑफलाइन सहेजी',
+    },
+    'failed_status': {
+      'en': 'Failed ❌',
+      'hi': 'विफल ❌',
+    },
+    'percent_complete': {
+      'en': '{percent}% complete',
+      'hi': '{percent}% पूर्ण',
+    },
+    'error_label': {
+      'en': 'Error',
+      'hi': 'त्रुटि',
+    },
+    'retry_button': {
+      'en': 'Retry',
+      'hi': 'पुनः प्रयास',
+    },
+    'delete': {
+      'en': 'Delete',
+      'hi': 'हटाएं',
+    },
+  };
+
+  // Complaints
+  static const Map<String, Map<String, String>> complaints = {
+    'complaints': {
+      'en': 'Complaints',
+      'hi': 'शिकायतें',
+    },
+    'file_complaint': {
+      'en': 'File Complaint',
+      'hi': 'शिकायत दर्ज करें',
+    },
+    'my_complaints': {
+      'en': 'My Complaints',
+      'hi': 'मेरी शिकायतें',
+    },
+    'current_complaints': {
+      'en': 'Current Complaints',
+      'hi': 'वर्तमान शिकायतें',
+    },
+    'current': {
+      'en': 'Current',
+      'hi': 'वर्तमान',
+    },
+    'past': {
+      'en': 'Past',
+      'hi': 'पुरानी',
+    },
+    'past_complaints': {
+      'en': 'Past Complaints',
+      'hi': 'पुरानी शिकायतें',
+    },
+    'complaint_type': {
+      'en': 'Complaint Type',
+      'hi': 'शिकायत प्रकार',
+    },
+    'description': {
+      'en': 'Description',
+      'hi': 'विवरण',
+    },
+    'submit_complaint': {
+      'en': 'Submit Complaint',
+      'hi': 'शिकायत जमा करें',
+    },
+    'complaint_submitted': {
+      'en': 'Complaint Submitted Successfully',
+      'hi': 'शिकायत सफलतापूर्वक दर्ज हुई',
+    },
+    'no_complaints': {
+      'en': 'No Complaints',
+      'hi': 'कोई शिकायत नहीं',
+    },
+    'no_complaints_found': {
+      'en': 'No complaints found',
+      'hi': 'कोई शिकायत नहीं मिली',
+    },
+    'all': {
+      'en': 'All',
+      'hi': 'सभी',
+    },
+    'under_review': {
+      'en': 'Under Review',
+      'hi': 'समीक्षाधीन',
+    },
+    'approved': {
+      'en': 'Approved',
+      'hi': 'स्वीकृत',
+    },
+    'rejected': {
+      'en': 'Rejected',
+      'hi': 'अस्वीकृत',
+    },
+    'resolved': {
+      'en': 'Resolved',
+      'hi': 'समाधान',
+    },
+    'damage': {
+      'en': 'Damage',
+      'hi': 'क्षति',
+    },
+    'claim': {
+      'en': 'Claim',
+      'hi': 'दावा',
+    },
+    'days': {
+      'en': 'Days',
+      'hi': 'दिन',
+    },
+    'acres': {
+      'en': 'acres',
+      'hi': 'एकड़',
+    },
+    'complaint_details': {
+      'en': 'Complaint Details',
+      'hi': 'शिकायत विवरण',
+    },
+    'feature_coming_soon': {
+      'en': 'Feature coming soon!',
+      'hi': 'जल्द आ रहा है!',
+    },
+    'no_past_complaints': {
+      'en': 'No past complaints found',
+      'hi': 'कोई पुरानी शिकायत नहीं मिली',
+    },
+    'complaint_history': {
+      'en': 'Your complaint history will appear here.',
+      'hi': 'आपकी शिकायत इतिहास यहाँ दिखाई देगी।',
+    },
+  };
+
+  // Auth
+  static const Map<String, Map<String, String>> auth = {
+    'login': {
+      'en': 'Login',
+      'hi': 'लॉगिन',
+    },
+    'register': {
+      'en': 'Register',
+      'hi': 'पंजीकरण',
+    },
+    'email': {
+      'en': 'Email',
+      'hi': 'ईमेल',
+    },
+    'email_address': {
+      'en': 'Email Address',
+      'hi': 'ईमेल पता',
+    },
+    'password': {
+      'en': 'Password',
+      'hi': 'पासवर्ड',
+    },
+    'phone': {
+      'en': 'Phone Number',
+      'hi': 'फ़ोन नंबर',
+    },
+    'mobile_number': {
+      'en': 'Mobile Number',
+      'hi': 'मोबाइल नंबर',
+    },
+    'enter_email': {
+      'en': 'Enter your email',
+      'hi': 'अपना ईमेल दर्ज करें',
+    },
+    'enter_password': {
+      'en': 'Enter your password',
+      'hi': 'अपना पासवर्ड दर्ज करें',
+    },
+    'enter_phone': {
+      'en': 'Enter your phone number',
+      'hi': 'अपना फ़ोन नंबर दर्ज करें',
+    },
+    'enter_valid_phone': {
+      'en': 'Please enter valid mobile number',
+      'hi': 'कृपया सही मोबाइल नंबर दर्ज करें',
+    },
+    'enter_otp': {
+      'en': 'Enter OTP',
+      'hi': 'OTP दर्ज करें',
+    },
+    'enter_6_digit_otp': {
+      'en': 'Please enter 6-digit OTP',
+      'hi': 'कृपया 6 अंकों का OTP दर्ज करें',
+    },
+    'login_success': {
+      'en': 'Login Successful',
+      'hi': 'लॉगिन सफल',
+    },
+    'login_failed': {
+      'en': 'Login Failed',
+      'hi': 'लॉगिन विफल',
+    },
+    'invalid_credentials': {
+      'en': 'Invalid email or password',
+      'hi': 'गलत ईमेल या पासवर्ड',
+    },
+    'send_otp': {
+      'en': 'Send OTP',
+      'hi': 'OTP भेजें',
+    },
+    'verify': {
+      'en': 'Verify',
+      'hi': 'सत्यापित करें',
+    },
+    'verify_otp': {
+      'en': 'Verify OTP',
+      'hi': 'OTP सत्यापित करें',
+    },
+    'otp_sent': {
+      'en': 'OTP Sent',
+      'hi': 'OTP भेजा गया',
+    },
+    'invalid_otp': {
+      'en': 'Invalid OTP',
+      'hi': 'गलत OTP',
+    },
+    'resend_otp': {
+      'en': 'Resend OTP',
+      'hi': 'OTP पुनः भेजें',
+    },
+    'register_as_farmer': {
+      'en': 'Register as Farmer',
+      'hi': 'किसान के रूप में पंजीकरण',
+    },
+    'register_as_officer': {
+      'en': 'Register as Officer',
+      'hi': 'अधिकारी के रूप में पंजीकरण',
+    },
+    'dont_have_account': {
+      'en': 'Don\'t have an account?',
+      'hi': 'खाता नहीं है?',
+    },
+    'already_have_account': {
+      'en': 'Already have an account?',
+      'hi': 'पहले से खाता है?',
+    },
+    'farmer_login': {
+      'en': 'Farmer Login',
+      'hi': 'किसान लॉगिन',
+    },
+    'officer_login': {
+      'en': 'Officer Login',
+      'hi': 'अधिकारी लॉगिन',
+    },
+    'new_user': {
+      'en': 'New User?',
+      'hi': 'नया उपयोगकर्ता?',
+    },
+    'phone_login': {
+      'en': 'Phone Login',
+      'hi': 'फ़ोन लॉगिन',
+    },
+    'email_login': {
+      'en': 'Email Login',
+      'hi': 'ईमेल लॉगिन',
+    },
+    'demo_accounts': {
+      'en': 'Demo Test Accounts',
+      'hi': 'डेमो टेस्ट खाते',
+    },
+    'login_as_farmer': {
+      'en': 'Login as Farmer',
+      'hi': 'किसान के रूप में लॉगिन',
+    },
+    'login_as_official': {
+      'en': 'Login as Official',
+      'hi': 'अधिकारी के रूप में लॉगिन',
+    },
+    'register_new_user': {
+      'en': 'Register New User',
+      'hi': 'नया उपयोगकर्ता पंजीकृत करें',
+    },
+    'choose_registration': {
+      'en': 'Please choose registration type:',
+      'hi': 'कृपया पंजीकरण प्रकार चुनें:',
+    },
+    'user_not_found': {
+      'en': 'User not found. Please register first.',
+      'hi': 'उपयोगकर्ता नहीं मिला। कृपया पहले पंजीकरण करें।',
+    },
+    'invalid_role': {
+      'en': 'Invalid role. Please login with correct account type.',
+      'hi': 'अमान्य भूमिका। कृपया सही खाता प्रकार से लॉगिन करें।',
+    },
+    'making_insurance_faster': {
+      'en': 'Making Crop Insurance Faster and Fairer',
+      'hi': 'फसल बीमा को तेज़ और निष्पक्ष बनाना',
+    },
+  };
+
+  // Common
+  static const Map<String, Map<String, String>> common = {
+    'yes': {
+      'en': 'Yes',
+      'hi': 'हाँ',
+    },
+    'no': {
+      'en': 'No',
+      'hi': 'नहीं',
+    },
+    'ok': {
+      'en': 'OK',
+      'hi': 'ठीक है',
+    },
+    'cancel': {
+      'en': 'Cancel',
+      'hi': 'रद्द करें',
+    },
+    'submit': {
+      'en': 'Submit',
+      'hi': 'जमा करें',
+    },
+    'save': {
+      'en': 'Save',
+      'hi': 'सहेजें',
+    },
+    'delete': {
+      'en': 'Delete',
+      'hi': 'हटाएं',
+    },
+    'edit': {
+      'en': 'Edit',
+      'hi': 'संपादित करें',
+    },
+    'close': {
+      'en': 'Close',
+      'hi': 'बंद करें',
+    },
+    'back': {
+      'en': 'Back',
+      'hi': 'वापस',
+    },
+    'next': {
+      'en': 'Next',
+      'hi': 'आगे',
+    },
+    'refresh': {
+      'en': 'Refresh',
+      'hi': 'ताज़ा करें',
+    },
+    'loading': {
+      'en': 'Loading...',
+      'hi': 'लोड हो रहा है...',
+    },
+    'error': {
+      'en': 'Error',
+      'hi': 'त्रुटि',
+    },
+    'success': {
+      'en': 'Success',
+      'hi': 'सफल',
+    },
+    'warning': {
+      'en': 'Warning',
+      'hi': 'चेतावनी',
+    },
+    'info': {
+      'en': 'Information',
+      'hi': 'जानकारी',
+    },
+    'please_wait': {
+      'en': 'Please wait...',
+      'hi': 'कृपया प्रतीक्षा करें...',
+    },
+    'try_again': {
+      'en': 'Try Again',
+      'hi': 'पुनः प्रयास करें',
+    },
+    'customer_support': {
+      'en': 'Customer Support',
+      'hi': 'ग्राहक सहायता',
+    },
+    'toll_free': {
+      'en': 'Toll-Free Helpline',
+      'hi': 'टोल-फ्री हेल्पलाइन',
+    },
+    'whatsapp_support': {
+      'en': 'WhatsApp Support',
+      'hi': 'व्हाट्सएप सहायता',
+    },
+    'service_hours': {
+      'en': 'Service Hours: Monday-Friday, 9 AM - 6 PM',
+      'hi': 'सेवा समय: सोमवार-शुक्रवार, 9 AM - 6 PM',
+    },
+    'exit_app': {
+      'en': 'Exit App?',
+      'hi': 'ऐप बंद करें?',
+    },
+    'exit_confirm': {
+      'en': 'Are you sure you want to exit the app?',
+      'hi': 'क्या आप वाकई ऐप से बाहर निकलना चाहते हैं?',
+    },
+    'yes_exit': {
+      'en': 'Yes, Exit',
+      'hi': 'हाँ, बाहर निकलें',
+    },
+    'hectares': {
+      'en': 'Hectares',
+      'hi': 'हेक्टेयर',
+    },
+    'acres': {
+      'en': 'Acres',
+      'hi': 'एकड़',
+    },
+  };
+
   // Helper method to get translation
   static String get(String category, String key, String languageCode) {
     final categoryMap = _getCategoryMap(category);
@@ -2255,6 +3495,22 @@ class AppStrings {
         return premium;
       case 'schemes':
         return schemes;
+      case 'camera':
+        return camera;
+      case 'cropLoss':
+        return cropLoss;
+      case 'multiImage':
+        return multiImage;
+      case 'satellite':
+        return satellite;
+      case 'uploads':
+        return uploads;
+      case 'complaints':
+        return complaints;
+      case 'auth':
+        return auth;
+      case 'common':
+        return common;
       default:
         return null;
     }

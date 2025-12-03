@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'providers/auth_provider.dart';
 import '../domain/models/user_model.dart';
 import '../../../utils/demo_users.dart';
+import '../../../providers/language_provider.dart';
+import '../../../localization/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
