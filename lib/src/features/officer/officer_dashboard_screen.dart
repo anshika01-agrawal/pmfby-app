@@ -9,6 +9,8 @@ import '../satellite/enhanced_satellite_screen.dart';
 import '../settings/language_settings_screen.dart';
 import '../../providers/language_provider.dart';
 import '../../localization/app_localizations.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 enum OfficerLevel {
   national,
@@ -25,10 +27,17 @@ class OfficerDashboardScreen extends StatefulWidget {
 
 class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
   int _selectedIndex = 0;
+
   OfficerLevel _officerLevel = OfficerLevel.district; // Demo: District officer
   String _selectedState = 'Punjab';
   String _selectedDistrict = 'Ludhiana';
-  String _selectedClaimFilter = 'all'; // Filter for claims: all, pending, approved, rejected
+
+  // From master branch → keep for location services
+  String? _currentLocation;
+  bool _isLoadingLocation = true;
+
+  // From other branch → keep filter option
+  String _selectedClaimFilter = 'all'; // all, pending, approved, rejected
 
   // Demo statistics data
   final Map<String, dynamic> _stats = {
@@ -103,6 +112,94 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
         ],
       ),
     ) ?? false;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      // Check if location services are enabled
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        setState(() {
+          _currentLocation = 'Location services disabled';
+          _isLoadingLocation = false;
+        });
+        return;
+      }
+
+      // Check location permissions
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          setState(() {
+            _currentLocation = 'Location permission denied';
+            _isLoadingLocation = false;
+          });
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        setState(() {
+          _currentLocation = 'Location permission permanently denied';
+          _isLoadingLocation = false;
+        });
+        return;
+      }
+
+      // Get current position
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Get address from coordinates
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        String location = '';
+        
+        if (place.locality != null && place.locality!.isNotEmpty) {
+          location = place.locality!;
+        } else if (place.subAdministrativeArea != null && place.subAdministrativeArea!.isNotEmpty) {
+          location = place.subAdministrativeArea!;
+        } else if (place.administrativeArea != null && place.administrativeArea!.isNotEmpty) {
+          location = place.administrativeArea!;
+        }
+
+        if (place.administrativeArea != null && place.administrativeArea!.isNotEmpty) {
+          if (location.isNotEmpty && location != place.administrativeArea) {
+            location = '$location, ${place.administrativeArea}';
+          } else {
+            location = place.administrativeArea!;
+          }
+        }
+
+        setState(() {
+          _currentLocation = location.isNotEmpty ? location : 'Location found';
+          _isLoadingLocation = false;
+        });
+      } else {
+        setState(() {
+          _currentLocation = 'Location found';
+          _isLoadingLocation = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _currentLocation = 'Unable to get location';
+        _isLoadingLocation = false;
+      });
+    }
   }
 
   @override
@@ -283,13 +380,34 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                           children: [
                             Icon(Icons.location_on, color: Colors.white, size: 16),
                             const SizedBox(width: 4),
-                            Text(
-                              _getLocationText(),
-                              style: GoogleFonts.roboto(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 13,
+                            _isLoadingLocation
+                                ? SizedBox(
+                                    width: 12,
+                                    height: 12,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white.withOpacity(0.9),
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    _currentLocation ?? _getLocationText(),
+                                    style: GoogleFonts.roboto(
+                                      color: Colors.white.withOpacity(0.9),
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                            const SizedBox(width: 8),
+                            if (!_isLoadingLocation)
+                              GestureDetector(
+                                onTap: _getCurrentLocation,
+                                child: Icon(
+                                  Icons.refresh,
+                                  color: Colors.white.withOpacity(0.8),
+                                  size: 16,
+                                ),
                               ),
-                            ),
                             const Spacer(),
                             TextButton.icon(
                               onPressed: _showLevelSelector,

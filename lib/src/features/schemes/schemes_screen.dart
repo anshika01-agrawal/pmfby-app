@@ -21,6 +21,38 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
     _tabController = TabController(length: 2, vsync: this);
   }
 
+  // Helper method for Hindi text with proper Devanagari font
+  TextStyle hindiTextStyle({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+    double? height,
+    double? letterSpacing,
+  }) {
+    return GoogleFonts.notoSansDevanagari(
+      fontSize: fontSize ?? 14,
+      fontWeight: fontWeight ?? FontWeight.normal,
+      color: color ?? Colors.black87,
+      height: height,
+      letterSpacing: letterSpacing,
+    );
+  }
+
+  // Helper for English text
+  TextStyle englishTextStyle({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+    double? height,
+  }) {
+    return GoogleFonts.poppins(
+      fontSize: fontSize ?? 14,
+      fontWeight: fontWeight ?? FontWeight.normal,
+      color: color ?? Colors.black87,
+      height: height,
+    );
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -28,42 +60,50 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<LanguageProvider>(
-      builder: (context, languageProvider, child) {
-        final lang = languageProvider.currentLanguage;
-        return Scaffold(
-          backgroundColor: Colors.grey.shade50,
-          appBar: AppBar(
-            title: Text(
-              AppStrings.get('schemes', 'insurance_schemes', lang),
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-            ),
-            backgroundColor: Colors.green.shade700,
-            foregroundColor: Colors.white,
-            elevation: 0,
-            bottom: TabBar(
-              controller: _tabController,
-              indicatorColor: Colors.white,
-              indicatorWeight: 3,
-              labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14),
-              tabs: [
-                Tab(text: AppStrings.get('schemes', 'all_schemes', lang)),
-                Tab(text: AppStrings.get('schemes', 'eligibility_check', lang)),
-              ],
+Widget build(BuildContext context) {
+  return Consumer<LanguageProvider>(
+    builder: (context, languageProvider, child) {
+      final lang = languageProvider.currentLanguage;
+
+      return Scaffold(
+        backgroundColor: Colors.grey.shade50,
+        appBar: AppBar(
+          title: Text(
+            AppStrings.get('schemes', 'insurance_schemes', lang),
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
             ),
           ),
-          body: TabBarView(
+          backgroundColor: Colors.green.shade700,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          bottom: TabBar(
             controller: _tabController,
-            children: [
-              _buildSchemesTab(lang),
-              _buildEligibilityTab(lang),
+            indicatorColor: Colors.white,
+            indicatorWeight: 3,
+            labelStyle: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+            ),
+            tabs: [
+              Tab(text: AppStrings.get('schemes', 'all_schemes', lang)),
+              Tab(text: AppStrings.get('schemes', 'eligibility_check', lang)),
             ],
           ),
-        );
-      },
-    );
-  }
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            _buildSchemesTab(lang),
+            _buildEligibilityTab(lang),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 
   Widget _buildSchemesTab(String lang) {
     return ListView(
@@ -75,11 +115,13 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
         const SizedBox(height: 24),
         
         Text(
+          'अन्य योजनाएं',
           AppStrings.get('schemes', 'other_schemes', lang),
           style: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
+            letterSpacing: 0.5,
           ),
         ),
         
@@ -248,16 +290,17 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                 const SizedBox(height: 16),
                 Text(
                   'प्रधानमंत्री फसल बीमा योजना',
-                  style: GoogleFonts.poppins(
-                    fontSize: 22,
+                  style: hindiTextStyle(
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    letterSpacing: 0.5,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Pradhan Mantri Fasal Bima Yojana (PMFBY)',
-                  style: GoogleFonts.poppins(
+                  style: englishTextStyle(
                     fontSize: 13,
                     color: Colors.white.withOpacity(0.9),
                   ),
@@ -265,10 +308,11 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                 const SizedBox(height: 16),
                 Text(
                   'फसल को बुवाई से कटाई तक होने वाले नुकसान के खिलाफ व्यापक जोखिम कवरेज',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
+                  style: hindiTextStyle(
+                    fontSize: 15,
                     color: Colors.white.withOpacity(0.95),
-                    height: 1.5,
+                    height: 1.6,
+                    letterSpacing: 0.3,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -303,10 +347,11 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                       ),
                       Text(
                         'और जानें →',
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
+                        style: hindiTextStyle(
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ],
@@ -334,10 +379,11 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
           const SizedBox(width: 6),
           Text(
             label,
-            style: GoogleFonts.poppins(
-              fontSize: 12,
+            style: hindiTextStyle(
+              fontSize: 13,
               fontWeight: FontWeight.w600,
               color: Colors.white,
+              letterSpacing: 0.3,
             ),
           ),
         ],
@@ -364,10 +410,11 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
               const SizedBox(width: 12),
               Text(
                 'प्रमुख विशेषताएं',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
+                style: hindiTextStyle(
+                  fontSize: 19,
                   fontWeight: FontWeight.bold,
                   color: Colors.blue.shade900,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
@@ -391,7 +438,7 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
         children: [
           Text(
             bullet,
-            style: GoogleFonts.poppins(
+            style: englishTextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.blue.shade700,
@@ -401,10 +448,11 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
           Expanded(
             child: Text(
               text,
-              style: GoogleFonts.poppins(
-                fontSize: 14,
+              style: hindiTextStyle(
+                fontSize: 15,
                 color: Colors.black87,
-                height: 1.4,
+                height: 1.5,
+                letterSpacing: 0.3,
               ),
             ),
           ),
@@ -458,10 +506,11 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
               children: [
                 Text(
                   'आवश्यक दस्तावेज़:',
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
+                  style: hindiTextStyle(
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.purple.shade900,
+                    letterSpacing: 0.3,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -482,9 +531,10 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
       padding: const EdgeInsets.only(bottom: 4),
       child: Text(
         text,
-        style: GoogleFonts.poppins(
-          fontSize: 12,
+        style: hindiTextStyle(
+          fontSize: 13,
           color: Colors.grey.shade700,
+          letterSpacing: 0.2,
         ),
       ),
     );
@@ -513,10 +563,11 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
               const SizedBox(width: 12),
               Text(
                 'सहायता एवं संपर्क',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
+                style: hindiTextStyle(
+                  fontSize: 19,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
@@ -568,9 +619,10 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                 children: [
                   Text(
                     label,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
+                    style: hindiTextStyle(
+                      fontSize: 13,
                       color: Colors.grey.shade600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   Text(
@@ -599,6 +651,16 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
         children: [
           Text(
             'पात्रता मानदंड',
+            style: hindiTextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Eligibility Criteria for PMFBY',
             style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -807,10 +869,11 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                         children: [
                           Text(
                             title,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
+                            style: hindiTextStyle(
+                              fontSize: 17,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
+                              letterSpacing: 0.3,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -829,10 +892,11 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                 const SizedBox(height: 16),
                 Text(
                   description,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
+                  style: hindiTextStyle(
+                    fontSize: 14,
                     color: Colors.grey.shade700,
-                    height: 1.5,
+                    height: 1.6,
+                    letterSpacing: 0.2,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -852,18 +916,20 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                               children: [
                                 Text(
                                   'प्रीमियम',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 11,
+                                  style: hindiTextStyle(
+                                    fontSize: 12,
                                     color: Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   premium,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13,
+                                  style: hindiTextStyle(
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                     color: color,
+                                    letterSpacing: 0.3,
                                   ),
                                 ),
                               ],
@@ -881,18 +947,20 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                               children: [
                                 Text(
                                   'कवरेज',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 11,
+                                  style: hindiTextStyle(
+                                    fontSize: 12,
                                     color: Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   coverage,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13,
+                                  style: hindiTextStyle(
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                     color: color,
+                                    letterSpacing: 0.3,
                                   ),
                                 ),
                               ],
@@ -914,9 +982,10 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
                         Expanded(
                           child: Text(
                             benefit,
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
+                            style: hindiTextStyle(
+                              fontSize: 13,
                               color: Colors.grey.shade700,
+                              letterSpacing: 0.2,
                             ),
                           ),
                         ),
@@ -947,7 +1016,7 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
             child: Center(
               child: Text(
                 number,
-                style: GoogleFonts.poppins(
+                style: englishTextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -959,9 +1028,10 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
           Expanded(
             child: Text(
               text,
-              style: GoogleFonts.poppins(
-                fontSize: 14,
+              style: hindiTextStyle(
+                fontSize: 15,
                 color: Colors.black87,
+                letterSpacing: 0.2,
               ),
             ),
           ),
@@ -1001,15 +1071,20 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
               const SizedBox(height: 20),
               Text(
                 schemeName,
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
+                style: hindiTextStyle(
+                  fontSize: 21,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
               ),
               const SizedBox(height: 20),
               Text(
                 'यह योजना के विस्तृत विवरण के लिए एक प्लेसहोल्डर है। पूर्ण जानकारी जल्द ही जोड़ी जाएगी।',
-                style: GoogleFonts.poppins(fontSize: 14),
+                style: hindiTextStyle(
+                  fontSize: 15,
+                  letterSpacing: 0.3,
+                  height: 1.5,
+                ),
               ),
               const SizedBox(height: 20),
               FilledButton.icon(
@@ -1055,15 +1130,16 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
               ),
               Text(
                 'प्रधानमंत्री फसल बीमा योजना',
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
+                style: hindiTextStyle(
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Pradhan Mantri Fasal Bima Yojana (PMFBY)',
-                style: GoogleFonts.poppins(
+                style: englishTextStyle(
                   fontSize: 14,
                   color: Colors.grey.shade600,
                 ),
@@ -1071,22 +1147,24 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
               const SizedBox(height: 24),
               Text(
                 'योजना का उद्देश्य:',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
+                style: hindiTextStyle(
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: 0.3,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'पीएमएफबीवाई का उद्देश्य कृषि क्षेत्र में स्थायी उत्पादन का समर्थन करना है। यह योजना किसानों की आय को स्थिरता प्रदान करने और उन्हें नवीन कृषि पद्धतियों को अपनाने के लिए प्रोत्साहित करने का लक्ष्य रखती है।',
-                style: GoogleFonts.poppins(fontSize: 14, height: 1.5),
+                style: hindiTextStyle(fontSize: 15, height: 1.6, letterSpacing: 0.3),
               ),
               const SizedBox(height: 20),
               Text(
                 'मुख्य विशेषताएं:',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
+                style: hindiTextStyle(
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: 0.3,
                 ),
               ),
               const SizedBox(height: 12),
@@ -1098,9 +1176,10 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
               const SizedBox(height: 20),
               Text(
                 'प्रीमियम दरें:',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
+                style: hindiTextStyle(
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: 0.3,
                 ),
               ),
               const SizedBox(height: 12),
@@ -1150,7 +1229,7 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
           Expanded(
             child: Text(
               text,
-              style: GoogleFonts.poppins(fontSize: 14, height: 1.4),
+              style: hindiTextStyle(fontSize: 15, height: 1.5, letterSpacing: 0.2),
             ),
           ),
         ],
@@ -1164,9 +1243,10 @@ class _SchemesScreenState extends State<SchemesScreen> with SingleTickerProvider
       children: [
         Text(
           crop,
-          style: GoogleFonts.poppins(
-            fontSize: 14,
+          style: hindiTextStyle(
+            fontSize: 15,
             fontWeight: FontWeight.w500,
+            letterSpacing: 0.2,
           ),
         ),
         Text(

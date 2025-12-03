@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../weather/weather_screen.dart';
 
 class EnhancedSatelliteScreen extends StatefulWidget {
   const EnhancedSatelliteScreen({super.key});
@@ -10,14 +11,62 @@ class EnhancedSatelliteScreen extends StatefulWidget {
   State<EnhancedSatelliteScreen> createState() => _EnhancedSatelliteScreenState();
 }
 
-class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> {
+class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> with SingleTickerProviderStateMixin {
   final MapController _mapController = MapController();
+  late TabController _tabController;
   bool _showCropHealth = true;
   bool _showWeather = true;
   bool _showDistricts = true;
   bool _showNDVI = false;
   String _selectedLayer = 'satellite';
+  String _selectedDataLayer = 'none'; // none, soil_moisture, ndvi, soil_texture
   Map<String, dynamic>? _selectedFeature;
+  
+  // Satellite data layer info with enhanced details
+  final Map<String, Map<String, dynamic>> dataLayerInfo = {
+    'soil_moisture': {
+      'name': '💧 मृदा नमी विश्लेषण',
+      'nameEn': 'Soil Moisture Analysis',
+      'icon': Icons.water_drop,
+      'gradient': [Color(0xFF0288D1), Color(0xFF0277BD), Color(0xFF01579B)],
+      'color': Color(0xFF0277BD),
+      'description': 'NASA SMAP उपग्रह से रीयल-टाइम मृदा नमी डेटा • सिंचाई योजना के लिए आवश्यक',
+      'detailedDesc': 'जमीन की सतह से 5-10 सेमी गहराई तक मृदा में उपस्थित पानी की मात्रा को मापता है। फसल की सिंचाई आवश्यकता और सूखे की भविष्यवाणी के लिए महत्वपूर्ण।',
+      'unit': '% आयतन',
+      'source': 'NASA SMAP L4 Satellite',
+      'resolution': '9 km',
+      'frequency': 'Daily',
+      'emoji': '💧',
+    },
+    'ndvi': {
+      'name': '🌿 वनस्पति स्वास्थ्य सूचकांक',
+      'nameEn': 'Vegetation Health (NDVI)',
+      'icon': Icons.eco,
+      'gradient': [Color(0xFF388E3C), Color(0xFF2E7D32), Color(0xFF1B5E20)],
+      'color': Color(0xFF2E7D32),
+      'description': 'Sentinel-2 से फसल स्वास्थ्य मूल्यांकन • उत्पादन पूर्वानुमान',
+      'detailedDesc': 'पौधों की क्लोरोफिल सामग्री और स्वास्थ्य को मापता है। -1 से +1 तक का मान, जहाँ उच्च मान स्वस्थ वनस्पति को दर्शाता है। फसल की वृद्धि निगरानी के लिए अत्यंत उपयोगी।',
+      'unit': 'सूचकांक (-1 से +1)',
+      'source': 'Sentinel-2 MSI ESA',
+      'resolution': '10-20 m',
+      'frequency': '5 days',
+      'emoji': '🌿',
+    },
+    'soil_texture': {
+      'name': '🏜️ मृदा संरचना मानचित्र',
+      'nameEn': 'Soil Composition Map',
+      'icon': Icons.terrain,
+      'gradient': [Color(0xFF8D6E63), Color(0xFF6D4C41), Color(0xFF5D4037)],
+      'color': Color(0xFF6D4C41),
+      'description': 'ISRO भुवन से मिट्टी की बनावट और संरचना • फसल उपयुक्तता',
+      'detailedDesc': 'मिट्टी में मौजूद रेत, गाद और मिट्टी के कणों का अनुपात। विभिन्न फसलों के लिए उपयुक्त मिट्टी का चयन करने में सहायक। उर्वरक और जल प्रबंधन के लिए आवश्यक।',
+      'unit': 'प्रकार',
+      'source': 'ISRO Bhuvan NRSC',
+      'resolution': '250 m',
+      'frequency': 'Static',
+      'emoji': '🏜️',
+    },
+  };
 
   // District-wise crop data
   final List<Map<String, dynamic>> districts = [
@@ -140,10 +189,54 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
-      body: Stack(
+      appBar: AppBar(
+        title: Text(
+          'Satellite & Weather',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(
+              icon: Icon(Icons.satellite_alt),
+              text: 'Satellite',
+            ),
+            Tab(
+              icon: Icon(Icons.cloud),
+              text: 'Weather',
+            ),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildSatelliteView(),
+          const WeatherScreen(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSatelliteView() {
+    return Stack(
         children: [
           // Map
           FlutterMap(
@@ -155,12 +248,41 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> {
               maxZoom: 18.0,
             ),
             children: [
+              // Base layer
               TileLayer(
                 urlTemplate: _selectedLayer == 'satellite'
                     ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
                     : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.pmfby.app',
               ),
+              // Satellite Data Overlay Layers
+              if (_selectedDataLayer == 'soil_moisture')
+                Opacity(
+                  opacity: 0.7,
+                  child: TileLayer(
+                    urlTemplate: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/SMAP_L4_Analyzed_Root_Zone_Soil_Moisture/default/{time}/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png',
+                    additionalOptions: const {
+                      'time': '2024-12-01', // Dynamic date
+                    },
+                    userAgentPackageName: 'com.pmfby.app',
+                  ),
+                ),
+              if (_selectedDataLayer == 'ndvi')
+                Opacity(
+                  opacity: 0.7,
+                  child: TileLayer(
+                    urlTemplate: 'https://services.sentinel-hub.com/ogc/wms/YOUR_INSTANCE_ID?REQUEST=GetMap&LAYERS=NDVI&WIDTH=256&HEIGHT=256&BBOX={bbox}&FORMAT=image/png',
+                    userAgentPackageName: 'com.pmfby.app',
+                  ),
+                ),
+              if (_selectedDataLayer == 'soil_texture')
+                Opacity(
+                  opacity: 0.6,
+                  child: TileLayer(
+                    urlTemplate: 'https://bhuvan-vec1.nrsc.gov.in/bhuvan/gwc/service/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=india3&BBOX={bbox}&WIDTH=256&HEIGHT=256&FORMAT=image/png',
+                    userAgentPackageName: 'com.pmfby.app',
+                  ),
+                ),
               // District markers
               if (_showDistricts)
                 MarkerLayer(
@@ -422,6 +544,136 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> {
               ),
             ),
 
+          // Satellite Data Layer Selector (Left side) - Enhanced
+          Positioned(
+            left: 16,
+            bottom: _selectedFeature != null ? 320 : 100,
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 280),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 8),
+                  ),
+                  BoxShadow(
+                    color: const Color(0xFF1B5E20).withOpacity(0.1),
+                    blurRadius: 30,
+                    spreadRadius: 5,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header with gradient
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF1B5E20), Color(0xFF2E7D32), Color(0xFF43A047)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(
+                            Icons.satellite_alt,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '🛰️ सैटेलाइट डेटा',
+                                style: GoogleFonts.notoSansDevanagari(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              Text(
+                                'Real-time Analysis',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 10,
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Buttons container
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildDataLayerButton('soil_moisture'),
+                        const SizedBox(height: 10),
+                        _buildDataLayerButton('ndvi'),
+                        const SizedBox(height: 10),
+                        _buildDataLayerButton('soil_texture'),
+                        if (_selectedDataLayer != 'none') ...[
+                          const SizedBox(height: 12),
+                          const Divider(height: 1),
+                          const SizedBox(height: 8),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                _selectedDataLayer = 'none';
+                              });
+                            },
+                            icon: const Icon(Icons.layers_clear, size: 18),
+                            label: Text(
+                              'सभी लेयर हटाएं',
+                              style: GoogleFonts.notoSansDevanagari(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade50,
+                              foregroundColor: Colors.red.shade700,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(color: Colors.red.shade200),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
           // Zoom controls
           Positioned(
             right: 16,
@@ -455,7 +707,6 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> {
             ),
           ),
         ],
-      ),
     );
   }
 
@@ -676,6 +927,481 @@ class _EnhancedSatelliteScreenState extends State<EnhancedSatelliteScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildDataLayerButton(String layerKey) {
+    final layer = dataLayerInfo[layerKey]!;
+    final isSelected = _selectedDataLayer == layerKey;
+    
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      margin: const EdgeInsets.only(bottom: 2),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              _selectedDataLayer = isSelected ? 'none' : layerKey;
+            });
+            if (!isSelected) {
+              _showDataLayerInfo(layerKey);
+            }
+          },
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              gradient: isSelected
+                  ? LinearGradient(
+                      colors: layer['gradient'],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : LinearGradient(
+                      colors: [Colors.grey.shade50, Colors.white],
+                    ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isSelected ? layer['color'] : Colors.grey.shade300,
+                width: isSelected ? 2.5 : 1.5,
+              ),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: layer['color'].withOpacity(0.4),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                        offset: const Offset(0, 4),
+                      ),
+                      BoxShadow(
+                        color: layer['color'].withOpacity(0.2),
+                        blurRadius: 24,
+                        spreadRadius: 4,
+                        offset: const Offset(0, 8),
+                      ),
+                    ]
+                  : [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? Colors.white.withOpacity(0.2)
+                        : layer['color'].withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    layer['icon'],
+                    color: isSelected ? Colors.white : layer['color'],
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        layer['name'],
+                        style: GoogleFonts.notoSansDevanagari(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: isSelected ? Colors.white : Colors.black87,
+                          letterSpacing: 0.3,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        layer['nameEn'],
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          color: isSelected ? Colors.white.withOpacity(0.9) : Colors.grey.shade600,
+                        ),
+                      ),
+                      if (isSelected) ...[
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.white,
+                                size: 12,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'सक्रिय',
+                                style: GoogleFonts.notoSansDevanagari(
+                                  fontSize: 10,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                if (!isSelected)
+                  Icon(
+                    Icons.add_circle_outline,
+                    color: layer['color'],
+                    size: 20,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showDataLayerInfo(String layerKey) {
+    final layer = dataLayerInfo[layerKey]!;
+    
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        elevation: 16,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 400),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: LinearGradient(
+              colors: [Colors.white, layer['color'].withOpacity(0.05)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header with gradient
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: layer['gradient'],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: layer['color'].withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(
+                        layer['icon'],
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            layer['name'],
+                            style: GoogleFonts.notoSansDevanagari(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            layer['nameEn'],
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              color: Colors.white.withOpacity(0.9),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Content
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Description
+                    Text(
+                      layer['description'],
+                      style: GoogleFonts.notoSansDevanagari(
+                        fontSize: 15,
+                        height: 1.6,
+                        color: Colors.black87,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Detailed Description
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: layer['color'].withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: layer['color'].withOpacity(0.2),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Text(
+                        layer['detailedDesc'],
+                        style: GoogleFonts.notoSansDevanagari(
+                          fontSize: 13,
+                          height: 1.6,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    // Technical Details
+                    Text(
+                      '📊 तकनीकी विवरण',
+                      style: GoogleFonts.notoSansDevanagari(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildTechDetail(Icons.satellite_alt, 'स्रोत', layer['source']),
+                    _buildTechDetail(Icons.straighten, 'रिज़ॉल्यूशन', layer['resolution']),
+                    _buildTechDetail(Icons.update, 'अपडेट', layer['frequency']),
+                    _buildTechDetail(Icons.speed, 'इकाई', layer['unit']),
+                    
+                    const SizedBox(height: 20),
+                    
+                    // Legend
+                    Text(
+                      '🎨 रंग संकेत',
+                      style: GoogleFonts.notoSansDevanagari(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.grey.shade200),
+                      ),
+                      child: _buildLegend(layerKey),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Actions
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close),
+                        label: Text(
+                          'बंद करें',
+                          style: GoogleFonts.notoSansDevanagari(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: BorderSide(color: Colors.grey.shade300),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildTechDetail(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: const Color(0xFF616161)),
+          const SizedBox(width: 10),
+          Text(
+            '$label: ',
+            style: GoogleFonts.notoSansDevanagari(
+              fontSize: 13,
+              color: const Color(0xFF616161),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF212121),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegend(String layerKey) {
+    switch (layerKey) {
+      case 'soil_moisture':
+        return Column(
+          children: [
+            _buildLegendItem(Colors.brown.shade900, '0-10%', 'बहुत शुष्क'),
+            _buildLegendItem(Colors.orange.shade700, '10-20%', 'शुष्क'),
+            _buildLegendItem(Colors.yellow.shade600, '20-30%', 'मध्यम'),
+            _buildLegendItem(Colors.lightGreen.shade600, '30-40%', 'नम'),
+            _buildLegendItem(Colors.blue.shade700, '40%+', 'बहुत नम'),
+          ],
+        );
+      case 'ndvi':
+        return Column(
+          children: [
+            _buildLegendItem(Colors.red.shade700, '-1 to 0', 'जल/बंजर'),
+            _buildLegendItem(Colors.orange.shade600, '0-0.2', 'खराब'),
+            _buildLegendItem(Colors.yellow.shade600, '0.2-0.4', 'मध्यम'),
+            _buildLegendItem(Colors.lightGreen.shade600, '0.4-0.6', 'अच्छा'),
+            _buildLegendItem(Colors.green.shade800, '0.6-1.0', 'उत्कृष्ट'),
+          ],
+        );
+      case 'soil_texture':
+        return Column(
+          children: [
+            _buildLegendItem(Colors.brown.shade900, 'Clay', 'चिकनी मिट्टी'),
+            _buildLegendItem(Colors.brown.shade600, 'Loam', 'दोमट'),
+            _buildLegendItem(Colors.brown.shade400, 'Sandy Loam', 'रेतीली दोमट'),
+            _buildLegendItem(Colors.brown.shade200, 'Sandy', 'रेतीली'),
+          ],
+        );
+      default:
+        return Container();
+    }
+  }
+
+  Widget _buildLegendItem(Color color, String value, String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 24,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [color, color.withOpacity(0.7)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withOpacity(0.3),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Row(
+              children: [
+                Text(
+                  value,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '•',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade400,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: GoogleFonts.notoSansDevanagari(
+                      fontSize: 12,
+                      color: Colors.black87,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
